@@ -35,6 +35,17 @@ gulp.task('vendor', function() {
 });
 
 /**
+ * Copy build files to android
+ */
+gulp.task('android', function(){
+    gulp.src(['css/*']).pipe(gulp.dest('../android/app/assets/css'));
+    gulp.src(['js/*']).pipe(gulp.dest('../android/app/assets/js'));
+    gulp.src(['img/**']).pipe(gulp.dest('../android/app/assets/img'));
+    gulp.src(['fonts/*']).pipe(gulp.dest('../android/app/assets/fonts'));
+    gulp.src(['*.html']).pipe(gulp.dest('../android/app/assets/'));
+});
+
+/**
  * Compile files from _scss into css
  */
 gulp.task('sass', function () {

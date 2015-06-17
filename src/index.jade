@@ -17,27 +17,24 @@ html(lang="en")
     div(class='panel-overlay')
 
     div(class='views')
-      div(class='navbar')
-        div(class='navbar-inner')
-          div(class='center sliding') PasserBy
+      div(class='view view-main')
+        //- tab bar
+        div(class='toolbar tabbar')
+          div(class='toolbar-inner')
+            a(href='#tab1' class='tab-link active')
+              i(class='icon ion-android-locate')
+              span(class='tabbar-label') Explore
 
-      //- tab bar
-      div(class='toolbar tabbar')
-        div(class='toolbar-inner')
-          a(href='#tab1' class='tab-link active')
-            i(class='icon ion-android-locate')
-            span(class='tabbar-label') Explore
+            a(href='#tab2' class='tab-link')
+              i(class='icon ion-stats-bars')
+              span(class='tabbar-label') Statics
 
-          a(href='#tab2' class='tab-link')
-            i(class='icon ion-stats-bars')
-            span(class='tabbar-label') Statics
+            a(href='#tab3' class='tab-link')
+              i(class='icon ion-trophy')
+              span(class='tabbar-label') Achieves
 
-          a(href='#tab3' class='tab-link')
-            i(class='icon ion-trophy')
-            span(class='tabbar-label') Achieves
-
-          a(href='#tab4' class='tab-link')
-            i(class='icon ion-android-settings')
-            span(class='tabbar-label') Help
+            a(href='#tab4' class='tab-link')
+              i(class='icon ion-android-settings')
+              span(class='tabbar-label') Help
 
     script(src='js/framework7.js', type='text/javascript')
