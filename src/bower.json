@@ -1,0 +1,23 @@
+{
+  "name": "PasserBy",
+  "version": "0.1.0",
+  "homepage": "http://zhangwenli.com/passer-py",
+  "authors": [
+    "Ovilia"
+  ],
+  "description": "Secret...",
+  "keywords": [
+    "Game",
+    "Argumented Reality",
+    "Location-based"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "jquery": "~1.11.1",
+    "framework7": "~1.0.6"
+  }
+}

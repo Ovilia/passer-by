@@ -1,3 +1,7 @@
+# Bower and npm packages
+src/bower_components
+src/node_modules
+
 # Built application files
 /*/build/
  
