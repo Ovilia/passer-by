@@ -16,11 +16,12 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        XWalkView xWalkWebView=(XWalkView)findViewById(R.id.xwalkWebView);
-        xWalkWebView.load("http://baidu.com", null);
-
         // turn on debugging
         XWalkPreferences.setValue(XWalkPreferences.REMOTE_DEBUGGING, true);
+
+        XWalkView xWalkWebView=(XWalkView)findViewById(R.id.xwalkWebView);
+        xWalkWebView.load("file:///android_asset/index.html", null);
+
     }
 
     @Override
