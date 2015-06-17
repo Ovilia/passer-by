@@ -1,8 +1,27 @@
 doctype html
 html(lang="en")
-    head
-        title PasserBy
-        link(href='css/main.css', type='text/css', rel='stylesheet')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui')
+    meta(name='apple-mobile-web-app-capable' content='yes')
+    meta(name='apple-mobile-web-app-status-bar-style', content='black')
+
+    title PasserBy
+
+    link(href='css/framework7.min.css', type='text/css', rel='stylesheet')
+    link(href='css/main.css', type='text/css', rel='stylesheet')
 
   body
-    h4 hi
+    div(class='statusbar-overlay')
+    div(class='panel-overlay')
+
+    div(class='panel panel-left panel-reveal')
+      div(class='content-block')
+        p Left panel
+
+    div(class='views')
+      div(class='navbar')
+        div(class='navbar-inner')
+          div(class='center sliding') PasserBy
+
+    script(src='js/framework7.js', type='text/javascript')

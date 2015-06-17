@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>3EAA189B-4B9E-4F54-8640-82AA856F4A74</string>
+	<key>IDESourceControlProjectName</key>
+	<string>project</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>34834E7E8DE5042869D5670732B284994393BF0A</key>
+		<string>https://github.com/crosswalk-project/crosswalk-ios.git</string>
+		<key>36940D5C5792D4C05D3FC9F4482DF52B2993B64E</key>
+		<string>github.com:Ovilia/passer-by.git</string>
+		<key>75224C288D14A799245F99223249EF48FF5DC280</key>
+		<string>https://github.com/glock45/swifter.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>ios/passer-by/passer-by.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>34834E7E8DE5042869D5670732B284994393BF0A</key>
+		<string>../../../../../crosswalk-ios</string>
+		<key>36940D5C5792D4C05D3FC9F4482DF52B2993B64E</key>
+		<string>../../../..</string>
+		<key>75224C288D14A799245F99223249EF48FF5DC280</key>
+		<string>../../../../../crosswalk-ios/third-party/swifter</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:Ovilia/passer-by.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>36940D5C5792D4C05D3FC9F4482DF52B2993B64E</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>34834E7E8DE5042869D5670732B284994393BF0A</string>
+			<key>IDESourceControlWCCName</key>
+			<string>crosswalk-ios</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>36940D5C5792D4C05D3FC9F4482DF52B2993B64E</string>
+			<key>IDESourceControlWCCName</key>
+			<string>passer-by</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>75224C288D14A799245F99223249EF48FF5DC280</string>
+			<key>IDESourceControlWCCName</key>
+			<string>swifter</string>
+		</dict>
+	</array>
+</dict>
+</plist>
