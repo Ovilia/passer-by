@@ -23,10 +23,15 @@ gulp.task('browser-sync', ['sass'], function() {
 gulp.task('vendor', function() {
     gulp.src(['bower_components/framework7/dist/js/framework7.js*'])
         .pipe(gulp.dest('js'));
-    gulp.src(['bower_components/framework7/dist/css/framework7.*min.css'])
+    gulp.src([
+        'bower_components/framework7/dist/css/framework7.*min.css',
+        'bower_components/ionicons/css/ionicons.min.css'
+        ])
         .pipe(gulp.dest('css'));
     gulp.src(['bower_components/framework7/dist/img/*'])
         .pipe(gulp.dest('img/framework7'));
+    gulp.src(['bower_components/ionicons/fonts/*'])
+        .pipe(gulp.dest('fonts'));
 });
 
 /**

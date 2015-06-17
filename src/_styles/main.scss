@@ -2,7 +2,7 @@
     #TOOLS
 \*------------------------------------*/
 
-@import "tools.mixins";
+// @import "tools.mixins";
 
 
 
@@ -10,20 +10,22 @@
     #SETTINGS
 \*------------------------------------*/
 
-@import "settings.basic";
-@import "settings.colors";
+// @import "settings.colors";
 @import "settings.fonts";
-@import "settings.imgs";
+// @import "settings.imgs";
+@import "settings.basic";
 
 
 
 /*------------------------------------*\
     #COMPONENTS
 \*------------------------------------*/
+@import "components.tabbar";
+@import "components.icon";
 
 
 
 /*------------------------------------*\
     #DEVICE
 \*------------------------------------*/
-@import "device.mobile";
+// @import "device.mobile";
