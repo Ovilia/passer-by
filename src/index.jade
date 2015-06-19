@@ -16,25 +16,28 @@ html(lang="en")
     div(class='statusbar-overlay')
     div(class='panel-overlay')
 
-    div(class='views')
-      div(class='view view-main')
-        //- tab bar
-        div(class='toolbar tabbar')
-          div(class='toolbar-inner')
-            a(href='#tab1' class='tab-link active')
-              i(class='icon ion-android-locate')
-              span(class='tabbar-label') Explore
+    div(class='views tabs toolbar-fixed')
+      include explore.jade
+      include statics.jade
 
-            a(href='#tab2' class='tab-link')
-              i(class='icon ion-stats-bars')
-              span(class='tabbar-label') Statics
+      //- tab bar
+      div(class='toolbar tabbar')
+        div(class='toolbar-inner')
+          a(href='#explore' class='tab-link active')
+            i(class='icon ion-android-locate')
+            span(class='tabbar-label') Explore
 
-            a(href='#tab3' class='tab-link')
-              i(class='icon ion-trophy')
-              span(class='tabbar-label') Achieves
+          a(href='#statics' class='tab-link show-statics')
+            i(class='icon ion-podium')
+            span(class='tabbar-label') Statics
 
-            a(href='#tab4' class='tab-link')
-              i(class='icon ion-android-settings')
-              span(class='tabbar-label') Help
+          a(href='#achieves' class='tab-link')
+            i(class='icon ion-trophy')
+            span(class='tabbar-label') Achieves
+
+          a(href='#help' class='tab-link')
+            i(class='icon ion-android-settings')
+            span(class='tabbar-label') Help
 
     script(src='js/framework7.js', type='text/javascript')
+    script(src='js/app.js', type='text/javascript')
