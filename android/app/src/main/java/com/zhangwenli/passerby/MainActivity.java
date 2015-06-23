@@ -22,6 +22,7 @@ public class MainActivity extends ActionBarActivity {
         XWalkView xWalkWebView=(XWalkView)findViewById(R.id.xwalkWebView);
         xWalkWebView.load("file:///android_asset/index.html", null);
 
+//        xWalkWebView.load("http://output.jsbin.com/pifas/2", null);
     }
 
     @Override

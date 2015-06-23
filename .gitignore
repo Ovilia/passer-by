@@ -2,6 +2,10 @@
 src/bower_components
 src/node_modules
 
+# Android and iOS assets are under /src folder
+ios/passer-by/passer-by/www
+android/app/assets
+
 # Built application files
 /*/build/
  

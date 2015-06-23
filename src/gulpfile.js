@@ -4,6 +4,7 @@ var sass        = require('gulp-sass');
 var prefix      = require('gulp-autoprefixer');
 var cp          = require('child_process');
 var jade        = require('gulp-jade');
+var clean       = require('gulp-clean');
 
 /**
  * Launch the Server
@@ -35,14 +36,36 @@ gulp.task('vendor', function() {
 });
 
 /**
- * Copy build files to android
+ * Build and clean android and ios
  */
+function build(destRoot) {
+    var paths = ['css/*', 'fonts/*', 'js/**', '*.html'];
+    var dest = ['css', 'fonts', 'js', '.']
+    for (var path in paths) {
+        gulp.src(paths[path]).pipe(gulp.dest(destRoot + dest[path]));
+    }
+}
+
+var androidRoot = '../android/app/assets/';
 gulp.task('android', function(){
-    gulp.src(['css/*']).pipe(gulp.dest('../android/app/assets/css'));
-    gulp.src(['js/*']).pipe(gulp.dest('../android/app/assets/js'));
-    gulp.src(['img/**']).pipe(gulp.dest('../android/app/assets/img'));
-    gulp.src(['fonts/*']).pipe(gulp.dest('../android/app/assets/fonts'));
-    gulp.src(['*.html']).pipe(gulp.dest('../android/app/assets/'));
+    build(androidRoot);
+});
+
+var iosRoot = '../ios/passer-by/passer-by/www/';
+gulp.task('ios', function(){
+    build(iosRoot);
+});
+
+gulp.task('build', function(){
+    gulp.run('jade');
+    gulp.run('sass');
+    gulp.run('android');
+    gulp.run('ios');
+});
+
+gulp.task('clean', function() {
+    return gulp.src([androidRoot, iosRoot], {read: false})
+        .pipe(clean({force: true}));
 });
 
 /**

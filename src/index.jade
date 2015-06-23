@@ -20,6 +20,10 @@ html(lang="en")
       div(class='view view-main')
         div(class='pages')
           div(data-page='main', class='page toolbar-fixed')
+
+            //- div(class='navbar')
+            //-   div(class='navbar-inner')
+            //-     div(class='center') Explore
             //- tab bar
             div(class='toolbar tabbar tabbar-labels-fixed')
               div(class='toolbar-inner')
@@ -40,14 +44,30 @@ html(lang="en")
                   //- span(class='tabbar-label') Help
 
             div(class='page-content')
-              div(class='content-block')
-                div(class='tabs')
+              //-div(class='content-block')
+              div(class='tabs')
 
-                  include explore.jade
-                  include statics.jade
-                  include achieve.jade
-                  include setting.jade
+                include explore.jade
+                include statics.jade
+                include achieve.jade
+                include setting.jade
+
 
 
     script(src='js/lib/framework7.js', type='text/javascript')
-    script(src='js/app/app.js', type='text/javascript')
+    //- script(src='js/lib/geoPosition.js', type='text/javascript')
+    script(src='js/lib/require.js', type='text/javascript' data-main='js/app')
+    script(type='text/javascript').
+        require.config({
+            baseUrl: './js/app',
+
+            packages: [{
+                name: 'echarts',
+                location: '../lib/echarts',
+                main: 'echarts'
+            }, {
+                name: 'zrender',
+                location: '../lib/zrender',
+                main: 'zrender'
+            }]
+        });
