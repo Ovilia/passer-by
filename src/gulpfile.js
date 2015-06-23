@@ -22,7 +22,7 @@ gulp.task('browser-sync', ['sass'], function() {
  */
 gulp.task('vendor', function() {
     gulp.src(['bower_components/framework7/dist/js/framework7.js*'])
-        .pipe(gulp.dest('js'));
+        .pipe(gulp.dest('js/lib'));
     gulp.src([
         'bower_components/framework7/dist/css/framework7.*min.css',
         'bower_components/ionicons/css/ionicons.min.css'

@@ -16,28 +16,38 @@ html(lang="en")
     div(class='statusbar-overlay')
     div(class='panel-overlay')
 
-    div(class='views tabs toolbar-fixed')
-      include explore.jade
-      include statics.jade
+    div(class='views')
+      div(class='view view-main')
+        div(class='pages')
+          div(data-page='main', class='page toolbar-fixed')
+            //- tab bar
+            div(class='toolbar tabbar tabbar-labels-fixed')
+              div(class='toolbar-inner')
+                a(href='#tab-explore' class='tab-link active')
+                  i(class='icon ion-android-locate')
+                  //- span(class='tabbar-label') Explore
 
-      //- tab bar
-      div(class='toolbar tabbar')
-        div(class='toolbar-inner')
-          a(href='#explore' class='tab-link active')
-            i(class='icon ion-android-locate')
-            span(class='tabbar-label') Explore
+                a(href='#tab-statics' class='tab-link')
+                  i(class='icon ion-podium')
+                  //- span(class='tabbar-label') Statics
 
-          a(href='#statics' class='tab-link show-statics')
-            i(class='icon ion-podium')
-            span(class='tabbar-label') Statics
+                a(href='#tab-achieve' class='tab-link')
+                  i(class='icon ion-trophy')
+                  //- span(class='tabbar-label') Achieves
 
-          a(href='#achieves' class='tab-link')
-            i(class='icon ion-trophy')
-            span(class='tabbar-label') Achieves
+                a(href='#tab-setting' class='tab-link')
+                  i(class='icon ion-android-settings')
+                  //- span(class='tabbar-label') Help
 
-          a(href='#help' class='tab-link')
-            i(class='icon ion-android-settings')
-            span(class='tabbar-label') Help
+            div(class='page-content')
+              div(class='content-block')
+                div(class='tabs')
 
-    script(src='js/framework7.js', type='text/javascript')
-    script(src='js/app.js', type='text/javascript')
+                  include explore.jade
+                  include statics.jade
+                  include achieve.jade
+                  include setting.jade
+
+
+    script(src='js/lib/framework7.js', type='text/javascript')
+    script(src='js/app/app.js', type='text/javascript')
