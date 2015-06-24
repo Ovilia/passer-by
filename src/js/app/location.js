@@ -11,6 +11,9 @@ define(function(require) {
      */
     function Location() {
         this.geo = navigator.geolocation || xwalk.experimental.geolocation;
+
+        this.latitude = null;
+        this.longitude = null;
     }
 
 
@@ -32,11 +35,15 @@ define(function(require) {
      * @callback error return error when fail to get position
      */
     Location.prototype.getLocation = function(success, error) {
+        var that = this;
+        
         if (this.geo) {
             this.geo.getCurrentPosition(function (pos) {
                 var latitude = pos.coords.latitude;
                 var longitude = pos.coords.longitude;
                 if (success) {
+                    that.latitude = latitude;
+                    that.longitude = longitude;
                     success(latitude, longitude, pos);
                 }
             }, function (e) {
