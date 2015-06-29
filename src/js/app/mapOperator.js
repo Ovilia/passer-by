@@ -93,7 +93,9 @@ define(function(require) {
                 // a new player on map
                 var pos = new BMap.Point(players[i].longitude, 
                         players[i].latitude);
-                var marker = new BMap.Marker(pos);
+                var marker = new BMap.Marker(pos, {
+                    icon: this.shitIcon
+                });
                 this.map.addOverlay(marker);
                 this.markerPlayers.push({
                     player: players[i],
@@ -150,6 +152,9 @@ define(function(require) {
         // set map position
         this.updateLocation(startPoint.x, startPoint.y);
         this.map.enableScrollWheelZoom(true);
+
+
+        this.shitIcon = new BMap.Icon('./img/shit.gif', new BMap.Size(32, 32));
     };
 
 

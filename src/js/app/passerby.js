@@ -17,48 +17,75 @@ define(function(require) {
             dynamicNavbar: true
         });
 
+        $('#toggleLocation').click(function() {
+            that.isUpdatingLocation = !that.isUpdatingLocation;
+            that._log('isUpdatingLocation: ' + that.isUpdatingLocation);
+        });
+
+
+
         var MapOperator = require('mapOperator');
         var Location = require('location');
+        var ChartManager = require('chartManager');
+
+        // players
+        this.players = [];
 
         // map in explore page
         this.exploreMap = new MapOperator($('#explore-chart')[0]);
 
         // geo location
+        this.isUpdatingLocation = true;
+        this._fakeMyLocations(1000);
         this.location = new Location();
         var isLocationSupported = this.location.check();
         if (!isLocationSupported) {
             this._log('Geo location is not supported.', true);
         } else {
             this._log('Geo location is supported.');
-            this.updateLocation();
+            // this.updateLocationLoop();
         }
 
-        // players
-        this.players = [];
+        this.staticsChart = new ChartManager($('#statics-chart')[0]);
+        $('#tab-statics').on('show', function() {
+            that.staticsChart.init();
+
+            $('#staticsDayBtn').click(function() {
+                that.staticsChart.changeDuration(that.staticsChart.DurationType.day);
+                $('.statics-duration-btn').removeClass('active');
+                $(this).addClass('active');
+            });
+            $('#staticsWeekBtn').click(function() {
+                that.staticsChart.changeDuration(that.staticsChart.DurationType.week);
+                $('.statics-duration-btn').removeClass('active');
+                $(this).addClass('active');
+            });
+            $('#staticsMonthBtn').click(function() {
+                that.staticsChart.changeDuration(that.staticsChart.DurationType.month);
+                $('.statics-duration-btn').removeClass('active');
+                $(this).addClass('active');
+            });
+            $('#staticsYearBtn').click(function() {
+                that.staticsChart.changeDuration(that.staticsChart.DurationType.year);
+                $('.statics-duration-btn').removeClass('active');
+                $(this).addClass('active');
+            });
+        })
     }
 
 
 
     /**
-     * update geo location and update the explore map
+     * update my location constantly
      */
-    Passerby.prototype.updateLocation = function() {
+    Passerby.prototype.updateLocationLoop = function() {
+        this._fakePlayers(10);
+        this._updateLocation();
+
         var that = this;
-
-        this.location.getLocation(function(latitude, longitude, pos) {
-            that._log('latitude: ' + latitude + ', longitude: ' + longitude);
-            // update map position
-            that.exploreMap.updateLocation(longitude, latitude);
-
-            // fake players for debug
-            that._fakePlayers(20);
-            that.exploreMap.updatePlayers(that.players);
-
-            that.updatePlayers();
-        }, function(e) {
-            that._log('Fail to get location. Please try opening GPS.', true);
-            that._log(e);
-        });
+        this._updateLocationHandler = setTimeout(function() {
+            that.updateLocationLoop();
+        }, 3000);
     };
 
 
@@ -74,8 +101,63 @@ define(function(require) {
             that.exploreMap.updatePlayers(that.players);
             that.updatePlayers();
         }, 200);
-    }
+    };
 
+
+
+    /*****************************************************************
+     *                       private functions                       *
+     *****************************************************************/
+
+    /**
+     * update geo location once and update the explore map
+     */
+    Passerby.prototype._updateLocation = function() {
+        if (!this.isUpdatingLocation) {
+            return;
+        }
+
+        if (this._isDebug) {
+            if (this._geoId < this._geoArr.length) {
+                this.exploreMap.updateLocation(this._geoArr[this._geoId][0],
+                        this._geoArr[this._geoId][1]);
+                this.location.latitude = this._geoArr[this._geoId][1];
+                this.location.longitude = this._geoArr[this._geoId][0];
+                ++this._geoId;
+                // this._fakePlayersMoved(5, 5);
+                // this.exploreMap.updatePlayers(this.players);
+            }
+        } else {
+            var that = this;
+
+            this.location.getLocation(function(latitude, longitude, pos) {
+                that._log('latitude: ' + latitude + ', longitude: ' + longitude);
+                that._log(pos);
+                // update map position
+                that.exploreMap.updateLocation(longitude, latitude);
+
+                // fake players for debug
+                that._fakePlayers(20);
+                that.exploreMap.updatePlayers(that.players);
+
+                that.updatePlayers();
+            }, function(e) {
+                that._log('Fail to get location. Please try opening GPS.', true);
+                that._log(e);
+            });
+        }
+
+    };
+
+    /*****************************************************************
+     *                    end of private functions                   *
+     *****************************************************************/
+
+
+
+    /*****************************************************************
+     *                        debug functions                        *
+     *****************************************************************/
 
     /**
      * write log to log panel for debug
@@ -95,7 +177,24 @@ define(function(require) {
 
 
     /**
-     * make fake players for test
+     * make faking locations for test
+     * @param  {number} cnt number of locations
+     */
+    Passerby.prototype._fakeMyLocations = function(cnt) {
+        this._geoId = 0;
+        var x = 121.601307;
+        var y = 31.1822548;
+        this._geoArr = [];
+        for (var i = 0; i < cnt; ++i) {
+            this._geoArr.push([x + 0.0003 * (i + Math.random()),
+                    y + 0.0001 * (i + Math.random())]);
+        }
+    }
+
+
+
+    /**
+     * make faking players for test
      * @param  {number} cnt number of players
      */
     Passerby.prototype._fakePlayers = function(cnt) {
@@ -115,7 +214,7 @@ define(function(require) {
 
 
     /**
-     * moves fake players for test
+     * moves faking players for test
      * @param  {number} deleteCnt number of players to be deleted randomly
      * @param  {number} newCnt    number of players to be added randomly
      */
@@ -152,6 +251,10 @@ define(function(require) {
             }
         }
     }
+
+    /*****************************************************************
+     *                    end of debug functions                     *
+     *****************************************************************/
 
     
 

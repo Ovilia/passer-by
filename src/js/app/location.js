@@ -51,7 +51,9 @@ define(function(require) {
                     error(e);
                 }
             }, {
-                timeout: 30000
+                timeout: 30000,
+                enableHighAccuracy: true,
+                maximumAge: 0
             });
         }
     }

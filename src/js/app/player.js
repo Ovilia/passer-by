@@ -10,6 +10,8 @@ define(function(require) {
         this.id = id;
         this.longitude = longitude;
         this.latitude = latitude;
+
+        this.isMet = false;
     }
 
 
