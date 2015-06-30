@@ -1,0 +1,18 @@
+$clr-primary: #58FAFF;
+
+$clr-secondary: #FF6B76;
+
+$clr-back: #212838;
+$clr-back-light: lighten($clr-back, 10%);
+$clr-back-lighter: lighten($clr-back, 20%);
+
+$clr-gray: #AAA;
+$clr-gray-light: #CCC;
+$clr-gray-lightest: #EFEFFE;
+
+
+
+$clr-bg: $clr-back;
+$clr-bg-light: $clr-back-light;
+
+$clr-txt: $clr-gray-lightest;

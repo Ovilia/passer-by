@@ -47,28 +47,18 @@ define(function(require) {
         }
 
         this.staticsChart = new ChartManager($('#statics-chart')[0]);
+
         $('#tab-statics').on('show', function() {
             that.staticsChart.init();
-
-            $('#staticsDayBtn').click(function() {
-                that.staticsChart.changeDuration(that.staticsChart.DurationType.day);
-                $('.statics-duration-btn').removeClass('active');
-                $(this).addClass('active');
+            
+            $('#staticsDurationSelect').on('change', function() {
+                var chart = $('#staticsChartSelect').val();
+                that.staticsChart.updateChart(this.value, chart);
             });
-            $('#staticsWeekBtn').click(function() {
-                that.staticsChart.changeDuration(that.staticsChart.DurationType.week);
-                $('.statics-duration-btn').removeClass('active');
-                $(this).addClass('active');
-            });
-            $('#staticsMonthBtn').click(function() {
-                that.staticsChart.changeDuration(that.staticsChart.DurationType.month);
-                $('.statics-duration-btn').removeClass('active');
-                $(this).addClass('active');
-            });
-            $('#staticsYearBtn').click(function() {
-                that.staticsChart.changeDuration(that.staticsChart.DurationType.year);
-                $('.statics-duration-btn').removeClass('active');
-                $(this).addClass('active');
+            
+            $('#staticsChartSelect').on('change', function() {
+                var duration = $('#staticsDurationSelect').val();
+                that.staticsChart.updateChart(duration, this.value);
             });
         })
     }

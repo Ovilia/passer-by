@@ -1,5 +1,23 @@
 $tab-height: 44px;
 
+.toolbar {
+    background-color: $clr-bg-light;
+
+    &:before {
+        background-color: $clr-back-lighter;
+    }
+}
+
 .tabs, .tab {
     max-height: 100%;
+}
+
+.tabbar {
+    a {
+        color: $clr-gray;
+
+        &.active {
+            color: $clr-primary;
+        }
+    }
 }

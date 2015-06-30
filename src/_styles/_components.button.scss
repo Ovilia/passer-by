@@ -1,0 +1,9 @@
+.button {
+    border-color: $clr-primary;
+    color: $clr-primary;
+
+    &.active {
+        background: $clr-primary;
+        color: $clr-back;
+    }
+}

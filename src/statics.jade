@@ -1,10 +1,19 @@
 div(id='tab-statics', class='tab')
   div(id='statics-ctrl')
-    div(class='content-block')
-      p(class='buttons-row')
-        a(href='#', class='button active statics-duration-btn', id='staticsDayBtn') Today
-        a(href='#', class='button statics-duration-btn', id='staticsWeekBtn') Weekly
-        a(href='#', class='button statics-duration-btn', id='staticsMonthBtn') Monthly
-        a(href='#', class='button statics-duration-btn', id='staticsYearBtn') Yearly
+    div(class='list-block')
+      ul
+        li
+          div(class='item-content')
+            div(class='item-input')
+              select(id='staticsDurationSelect')
+                option(id='staticsDay', value='day') 今天
+                option(id='staticsWeek', value='week') 本周
+                option(id='staticsMonth', value='month') 本月
+                option(id='staticsYear', value='year') 本年
+            div(class='item-input')
+              select(id='staticsChartSelect')
+                option(id='staticsAmount', value='amount') 发现 / 传染人数
+                option(id='staticsHistory', value='history') 历史位置
+                option(id='staticsHotspot', value='hotspot') 本市热门区域
 
   div(id='statics-chart')

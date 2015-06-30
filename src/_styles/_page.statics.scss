@@ -1,8 +1,27 @@
-$statics-ctrl-height: 40px;
+$statics-ctrl-height: 44px;
+
+#tab-statics {
+    .list-block {
+        margin: 0;
+        height: $statics-ctrl-height;
+
+        ul:before, ul:after {
+            display: none;
+        }
+
+        .item-content {
+            background-color: $clr-bg-light;
+
+            select {
+                color: $clr-primary;
+            }
+        }
+    }
+}
 
 #statics-chart {
     width: 100%;
-    height: 80%;
     position: absolute;
+    top: $statics-ctrl-height;
     bottom: $tab-height;
 }
