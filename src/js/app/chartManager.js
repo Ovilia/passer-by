@@ -8,13 +8,21 @@ define(function(require) {
 
     var echarts = require('echarts');
     require('echarts/chart/bar');
+
+    var MapOperator = require('mapOperator');
+
     var color = require('color');
 
-    function ChartManager(chartDom) {
+    function ChartManager(chartDom, mapDom, location) {
         this.chartDom = chartDom;
+        this.location = location;
+        this.mapOperator = new MapOperator(mapDom);
 
         this.durationType = null;
         this.chartType = null;
+
+        this.defaultPos = [];
+
     }
 
 
@@ -62,6 +70,7 @@ define(function(require) {
             switch(chartType) {
                 case this.ChartType.amount:
                     var option = this._getAmountOption(durationType);
+                    this.chart.setOption(option, true);
                     break;
 
                 case this.ChartType.history:
@@ -75,8 +84,6 @@ define(function(require) {
                 default:
                     return;    
             }
-           
-            this.chart.setOption(option, true);
         }
     };
 
@@ -222,7 +229,11 @@ define(function(require) {
      * @return {Object} option
      */
     ChartManager.prototype._getHistoryOption = function() {
-
+        // var that = this;
+        // this.location.getLocation(function(longitude, latitude) {
+        //     that.mapOperator.updateLocation(longitude, latitude);
+        // });
+        this.mapOperator.map.centerAndZoom('上海');
     };
 
     /**
@@ -232,6 +243,7 @@ define(function(require) {
     ChartManager.prototype._getHotspotOption = function() {
 
     };
+
 
 
     return ChartManager;

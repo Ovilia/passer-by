@@ -43,10 +43,11 @@ define(function(require) {
             this._log('Geo location is not supported.', true);
         } else {
             this._log('Geo location is supported.');
-            // this.updateLocationLoop();
+            this.updateLocationLoop();
         }
 
-        this.staticsChart = new ChartManager($('#statics-chart')[0]);
+        this.staticsChart = new ChartManager($('#statics-chart')[0],
+                $('#statics-map')[0], this.location);
 
         $('#tab-statics').on('show', function() {
             that.staticsChart.init();
@@ -58,6 +59,13 @@ define(function(require) {
             
             $('#staticsChartSelect').on('change', function() {
                 var duration = $('#staticsDurationSelect').val();
+                if (this.value === that.staticsChart.ChartType.amount) {
+                    $('#statics-map').hide();
+                    $('#statics-chart').show();
+                } else {
+                    $('#statics-chart').hide();
+                    $('#statics-map').show();
+                }
                 that.staticsChart.updateChart(duration, this.value);
             });
         })
@@ -72,10 +80,10 @@ define(function(require) {
         this._fakePlayers(10);
         this._updateLocation();
 
-        var that = this;
-        this._updateLocationHandler = setTimeout(function() {
-            that.updateLocationLoop();
-        }, 3000);
+        // var that = this;
+        // this._updateLocationHandler = setTimeout(function() {
+        //     that.updateLocationLoop();
+        // }, 3000);
     };
 
 
@@ -107,35 +115,35 @@ define(function(require) {
             return;
         }
 
-        if (this._isDebug) {
-            if (this._geoId < this._geoArr.length) {
-                this.exploreMap.updateLocation(this._geoArr[this._geoId][0],
-                        this._geoArr[this._geoId][1]);
-                this.location.latitude = this._geoArr[this._geoId][1];
-                this.location.longitude = this._geoArr[this._geoId][0];
-                ++this._geoId;
-                // this._fakePlayersMoved(5, 5);
-                // this.exploreMap.updatePlayers(this.players);
-            }
-        } else {
+        // if (this._isDebug) {
+        //     if (this._geoId < this._geoArr.length) {
+        //         this.exploreMap.updateLocation(this._geoArr[this._geoId][0],
+        //                 this._geoArr[this._geoId][1]);
+        //         this.location.latitude = this._geoArr[this._geoId][1];
+        //         this.location.longitude = this._geoArr[this._geoId][0];
+        //         ++this._geoId;
+        //         // this._fakePlayersMoved(5, 5);
+        //         // this.exploreMap.updatePlayers(this.players);
+        //     }
+        // } else {
             var that = this;
 
-            this.location.getLocation(function(latitude, longitude, pos) {
+            this.location.getLocation(function(longitude, latitude, pos) {
                 that._log('latitude: ' + latitude + ', longitude: ' + longitude);
                 that._log(pos);
                 // update map position
                 that.exploreMap.updateLocation(longitude, latitude);
 
                 // fake players for debug
-                that._fakePlayers(20);
-                that.exploreMap.updatePlayers(that.players);
+                // that._fakePlayers(20);
+                // that.exploreMap.updatePlayers(that.players);
 
-                that.updatePlayers();
+                // that.updatePlayers();
             }, function(e) {
                 that._log('Fail to get location. Please try opening GPS.', true);
                 that._log(e);
             });
-        }
+        // }
 
     };
 

@@ -7,6 +7,7 @@
 define(function(require) {
 
     var Player = require('player');
+    var color = require('color');
 
     /**
      * init and displays the map
@@ -47,6 +48,12 @@ define(function(require) {
         var point = new BMap.Point(longitude, latitude);
         this.map.centerAndZoom(point, 15);
         // update markerMe
+        if (!this.markerMe) {
+            this._initMyMarker({
+                x: longitude,
+                y: latitude
+            });
+        }
         this.markerMe.setPosition(point);
     };
 
@@ -58,7 +65,6 @@ define(function(require) {
      *                                           or a single player
      */
     MapOperator.prototype.updatePlayers = function(players) {
-        window.map = this.map;
         if (players instanceof Player) {
             this.updatePlayers([players]);
             return;
@@ -138,26 +144,115 @@ define(function(require) {
             enableMapClick: false
         });
         this.map = BMapExt.getMap();
-        var container = BMapExt.getEchartsContainer();
 
-        var startPoint = {
-            x: 115,
-            y: 38
-        };
-        // set my position marker
-        this.markerMe = new BMap.Marker(startPoint);
-        this.map.addOverlay(this.markerMe);
-        // this.markerMe.setAnimation(BMAP_ANIMATION_BOUNCE);
+        // this._setMapStyle();
 
-        // set map position
-        this.updateLocation(startPoint.x, startPoint.y);
         this.map.enableScrollWheelZoom(true);
-
-
-        this.shitIcon = new BMap.Icon('./img/shit.gif', new BMap.Size(32, 32));
+        this.map.centerAndZoom('上海');
     };
 
 
+
+    /**
+     * set a marker at my position
+     */
+    MapOperator.prototype._initMyMarker = function(point) {
+        // set my position marker
+        this.markerMe = new BMap.Marker(point);
+        this.map.addOverlay(this.markerMe);
+        // this.markerMe.setAnimation(BMAP_ANIMATION_BOUNCE);
+    };
+
+
+
+    /**
+     * set map theme to dark
+     */
+    MapOperator.prototype._setMapStyle = function() {
+        var style = [{
+            "featureType": "land",
+            "elementType": "all",
+            "stylers": {
+                "color": color.back
+            }
+        }, {
+            "featureType": "green",
+            "elementType": "all",
+            "stylers": {
+                "color": color.backLight
+            }
+        }, {
+            "featureType": "water",
+            "elementType": "all",
+            "stylers": {
+                "color": color.backLighter
+            }
+        }, {
+            "featureType": "manmade",
+            "elementType": "all",
+            "stylers": {
+                "color": color.backLight
+            }
+        }, {
+            "featureType": "road",
+            "elementType": "all",
+            "stylers": {
+                "color": color.backLighter
+            }
+        }, {
+            "featureType": "building",
+            "elementType": "all",
+            "stylers": {
+                "color": "#000000"
+            }
+        }, {
+            "featureType": "poi",
+            "elementType": "labels.text.fill",
+            "stylers": {
+                "color": "#999999"
+            }
+        }, {
+            "featureType": "boundary",
+            "elementType": "all",
+            "stylers": {
+                "color": color.backLight
+            }
+        }, {
+            "featureType": "subway",
+            "elementType": "geometry",
+            "stylers": {
+                "color": color.backLighter
+            }
+        }, {
+            "featureType": "subway",
+            "elementType": "labels.text.fill",
+            "stylers": {
+                "color": "#ffffff"
+            }
+        }, {
+            "featureType": "poi",
+            "elementType": "labels",
+            "stylers": {
+                "visibility": "off"
+            }
+        }, {
+            "featureType": "highway",
+            "elementType": "labels",
+            "stylers": {
+                "visibility": "off"
+            }
+        }, {
+            "featureType": "label",
+            "elementType": "labels",
+            "stylers": {
+                "visibility": "off"
+            }
+        }];
+
+        this.map.setMapStyle({
+            styleJson: style
+        });
+    };
 
     return MapOperator;
 });

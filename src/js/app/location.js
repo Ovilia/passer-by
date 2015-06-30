@@ -44,7 +44,9 @@ define(function(require) {
                 if (success) {
                     that.latitude = latitude;
                     that.longitude = longitude;
-                    success(latitude, longitude, pos);
+                    that.getBaiduLocation(longitude, latitude, function(x, y) {
+                        success(x, y, pos);
+                    });
                 }
             }, function (e) {
                 if (error) {
@@ -56,6 +58,54 @@ define(function(require) {
                 maximumAge: 0
             });
         }
+    }
+
+
+
+    /**
+     * get geo location from device detected position to baidu position
+     * @param  {number} longitude                      longitude
+     * @param  {number} latitude                       latitude
+     * @param  {callback} success                      success callback function
+     * @param  {callback} error                        error callback function
+     */
+    Location.prototype.getBaiduLocation = function(
+        longitude, latitude,
+        success, error)
+    {
+        var that = this;
+        // Dom7.ajax({
+        //     url: 'http://api.map.baidu.com/geoconv/v1',
+        //     // crossDomain: true,
+        //     data: {
+        //         coords: [longitude, latitude],
+        //         from: 1,
+        //         to: 5,
+        //         ak: 'ZUONbpqGBsYGXNIYHicvbAbM',
+        //     },
+        //     dataType: 'jsonp',
+        //     jsonp: 'callback',
+        //     jsonpCallback: '?',
+        //     success: function(data) {
+        //         if (data.status === 0) {
+        //             that.latitude = latitude;
+        //             that.longitude = longitude;
+
+        //             if (success) {
+        //                 success(data.result[0].x, data.result[0].y);
+        //             }
+        //         } else {
+        //             if (error) {
+        //                 error(data.status);
+        //             }
+        //         }
+        //     },
+        //     error: function(xhr, status) {
+        //         if (error) {
+        //             error(status);
+        //         }
+        //     }
+        // });
     }
 
     return Location;

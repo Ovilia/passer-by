@@ -1,4 +1,4 @@
-$statics-ctrl-height: 44px;
+$statics-ctrl-height: 45px;
 
 #tab-statics {
     .list-block {
@@ -11,6 +11,7 @@ $statics-ctrl-height: 44px;
 
         .item-content {
             background-color: $clr-bg-light;
+            border-bottom: 1px solid $clr-back-lighter;
 
             select {
                 color: $clr-primary;
@@ -19,9 +20,13 @@ $statics-ctrl-height: 44px;
     }
 }
 
-#statics-chart {
+.statics-chart {
     width: 100%;
     position: absolute;
     top: $statics-ctrl-height;
     bottom: $tab-height;
+
+    &#statics-map {
+        display: none;
+    }
 }
