@@ -19,6 +19,7 @@ define(function(require) {
 
         this.mapDom = mapDom;
         this.map = null;
+        this.mapZoom = 18;
 
         this.markerMe = null;
 
@@ -45,16 +46,20 @@ define(function(require) {
      * @param  {number} longitude longitude of geo location
      */
     MapOperator.prototype.updateLocation = function(longitude, latitude) {
-        var point = new BMap.Point(longitude, latitude);
-        this.map.centerAndZoom(point, 15);
-        // update markerMe
-        if (!this.markerMe) {
-            this._initMyMarker({
-                x: longitude,
-                y: latitude
-            });
-        }
-        this.markerMe.setPosition(point);
+        var gpsPoint = new BMap.Point(longitude, latitude);
+        var that = this;
+        this._getBaiduLocation(gpsPoint, function(longitude, latitude) {
+            var baiduPoint = new BMap.Point(longitude, latitude);
+            that.map.centerAndZoom(baiduPoint, that.mapZoom);
+            // update markerMe
+            if (!that.markerMe) {
+                that._initMyMarker({
+                    x: longitude,
+                    y: latitude
+                });
+            }
+            that.markerMe.setPosition(baiduPoint);
+        });
     };
 
 
@@ -136,6 +141,10 @@ define(function(require) {
 
 
 
+    /*****************************************************************
+     *                       private functions                       *
+     *****************************************************************/
+
     /**
      * init map
      */
@@ -145,7 +154,9 @@ define(function(require) {
         });
         this.map = BMapExt.getMap();
 
-        // this._setMapStyle();
+        this._initConvertor();
+
+        this._setMapStyle();
 
         this.map.enableScrollWheelZoom(true);
         this.map.centerAndZoom('上海');
@@ -161,6 +172,66 @@ define(function(require) {
         this.markerMe = new BMap.Marker(point);
         this.map.addOverlay(this.markerMe);
         // this.markerMe.setAnimation(BMAP_ANIMATION_BOUNCE);
+    };
+
+
+
+    /**
+     * init baidu map geo location convertor
+     * method from http://developer.baidu.com/map/jsdemo/demo/convertor.js
+     */
+    MapOperator.prototype._initConvertor = function() {
+        function load_script(xyUrl, callback){
+            var head = document.getElementsByTagName('head')[0];
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = xyUrl;
+            script.onload = script.onreadystatechange = function(){
+                if((!this.readyState || this.readyState === "loaded" 
+                        || this.readyState === "complete")){
+                    callback && callback();
+                    // Handle memory leak in IE
+                    script.onload = script.onreadystatechange = null;
+                    if (head && script.parentNode) {
+                        head.removeChild(script);
+                    }
+                }
+            };
+            // Use insertBefore instead of appendChild  to circumvent an IE6 bug.
+            head.insertBefore(script, head.firstChild);
+        }
+
+        function translate(point, type, callback){
+            var callbackName = 'cbk_' + Math.round(Math.random() * 10000);
+            var xyUrl = "http://api.map.baidu.com/ag/coord/convert?from=" + type 
+                    + "&to=4&x=" + point.lng + "&y=" + point.lat 
+                    + "&callback=BMap.Convertor." + callbackName;
+            load_script(xyUrl);
+            BMap.Convertor[callbackName] = function(xyResult){
+                delete BMap.Convertor[callbackName];
+                var point = new BMap.Point(xyResult.x, xyResult.y);
+                callback && callback(point);
+            }
+        }
+
+        BMap.Convertor = {};
+        BMap.Convertor.translate = translate;
+    };
+
+
+
+    /**
+     * get geo location in baidu map
+     * @param  {BMap.Point} point of gps location
+     * @param  {Function} callback  callback function when get location
+     */
+    MapOperator.prototype._getBaiduLocation = function(gpsPoint, callback) {
+        var that = this;
+        BMap.Convertor.translate(gpsPoint, 0, function(point) {
+            if (callback) {
+                callback(point.lng, point.lat);
+            }
+        });
     };
 
 
@@ -246,6 +317,12 @@ define(function(require) {
             "elementType": "labels",
             "stylers": {
                 "visibility": "off"
+            }
+        }, {
+            "featureType": "arterial",
+            "elementType": "labels.text.fill",
+            "stylers": {
+                "color": "#999999"
             }
         }];
 

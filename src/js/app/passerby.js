@@ -17,18 +17,15 @@ define(function(require) {
             dynamicNavbar: true
         });
 
-        $('#toggleLocation').click(function() {
-            that.isUpdatingLocation = !that.isUpdatingLocation;
-            that._log('isUpdatingLocation: ' + that.isUpdatingLocation);
-        });
-
-
-
         var MapOperator = require('mapOperator');
         var Location = require('location');
         var ChartManager = require('chartManager');
 
-        // players
+
+
+        /**
+         * explore page
+         */
         this.players = [];
 
         // map in explore page
@@ -43,13 +40,24 @@ define(function(require) {
             this._log('Geo location is not supported.', true);
         } else {
             this._log('Geo location is supported.');
-            this.updateLocationLoop();
+            this.updateLocationStart();
         }
 
+        $('#tab-explore').on('show', function() {
+            that.updateLocationStart();
+        });
+
+
+
+        /**
+         * statics page
+         */
         this.staticsChart = new ChartManager($('#statics-chart')[0],
                 $('#statics-map')[0], this.location);
 
         $('#tab-statics').on('show', function() {
+            that.updateLocationStop();
+
             that.staticsChart.init();
             
             $('#staticsDurationSelect').on('change', function() {
@@ -68,7 +76,7 @@ define(function(require) {
                 }
                 that.staticsChart.updateChart(duration, this.value);
             });
-        })
+        });
     }
 
 
@@ -76,14 +84,27 @@ define(function(require) {
     /**
      * update my location constantly
      */
-    Passerby.prototype.updateLocationLoop = function() {
-        this._fakePlayers(10);
+    Passerby.prototype.updateLocationStart = function() {
+        // this._fakePlayers(10);
+        this.isUpdatingLocation = true;
         this._updateLocation();
 
-        // var that = this;
-        // this._updateLocationHandler = setTimeout(function() {
-        //     that.updateLocationLoop();
-        // }, 3000);
+        var that = this;
+        this._updateLocationHandler = setTimeout(function() {
+            that.updateLocationStart();
+        }, 5000);
+    };
+
+
+    /**
+     * stop updating my location
+     */
+    Passerby.prototype.updateLocationStop = function() {
+        if (this._updateLocationHandler) {
+            clearTimeout(this._updateLocationHandler);
+            this._updateLocationHandler = null;
+        }
+        this.isUpdatingLocation = false;
     };
 
 
@@ -128,9 +149,8 @@ define(function(require) {
         // } else {
             var that = this;
 
-            this.location.getLocation(function(longitude, latitude, pos) {
+            this.location.getLocation(function(longitude, latitude) {
                 that._log('latitude: ' + latitude + ', longitude: ' + longitude);
-                that._log(pos);
                 // update map position
                 that.exploreMap.updateLocation(longitude, latitude);
 
