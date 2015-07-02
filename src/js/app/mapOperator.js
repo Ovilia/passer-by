@@ -111,63 +111,83 @@ define(function(require) {
 
     /**
      * update players on the map
-     * @param  {Array.<Player>|<Player>} players list of players, 
-     *                                           or a single player
+     * @param {Array.<Player>} players list of player
+     * @param {Location} location location object
      */
-    MapOperator.prototype.updatePlayers = function(players) {
-        if (players instanceof Player) {
-            this.updatePlayers([players]);
-            return;
-        }
+    MapOperator.prototype.updatePlayers = function(players, location) {
+        var IS_MET = 1;
+        var IS_NOT_MET = 0;
+        // player markPoint
+        var data = [[], []];
+        // player geo location in baidu map
+        var geo = [{}, {}];
 
-        // flag markerPlayers to be not exist this time
-        for (var j = this.markerPlayers.length - 1; j >= 0; --j) {
-            if (this.markerPlayers[j]) {
-                this.markerPlayers[j]._isOnMap = false;
-            }
-        }
-        for (var i = players.length - 1; i >= 0; --i) {
+        for (var i = 0, l = players.length; i < l; ++i) {
             if (!players[i]) {
                 continue;
             }
-            var wasOnMap = false;
-            for (var j = this.markerPlayers.length - 1; j >= 0; --j) {
-                if (this.markerPlayers[j]
-                        && this.markerPlayers[j].player === players[i]) {
-                    // this player is currently on the map, update position
-                    var point = new BMap.Point(players[i].longitude, 
-                            players[i].latitude);
-                    this.markerPlayers[j].marker.setPosition(point);
-                    // update markerPlayers to be exist this time
-                    this.markerPlayers[j]._isOnMap = true;
-                    // marker this player to be existed last time
-                    wasOnMap = true;
-                    break;
+
+            var name = players[i].id.toString();
+            var seriesId = players[i].isMet ? IS_MET : IS_NOT_MET;
+            geo[seriesId][name] = players[i].getGeo();
+            data[seriesId].push({
+                name: name,
+                value: 1
+            });
+        }
+
+        var option = {
+            series: [{
+                geoCoord: geo[IS_MET],
+                type: 'map',
+                mapType: 'none',
+                data: [],
+                markPoint: {
+                    symbol: 'circle',
+                    effect: {
+                        show: true,
+                        color: color.secondary
+                    },
+                    data: data[IS_MET],
+                    clickable: false
                 }
-            }
-            if (!wasOnMap) {
-                // a new player on map
-                var pos = new BMap.Point(players[i].longitude, 
-                        players[i].latitude);
-                var marker = new BMap.Marker(pos, {
-                    icon: this.shitIcon
-                });
-                this.map.addOverlay(marker);
-                this.markerPlayers.push({
-                    player: players[i],
-                    marker: marker,
-                    _isOnMap: true
-                });
-            }
+            }, {
+                geoCoord: geo[IS_NOT_MET],
+                type: 'map',
+                mapType: 'none',
+                data: [],
+                markPoint: {
+                    symbol: 'circle',
+                    effect: {
+                        show: true,
+                        color: color.primary
+                    },
+                    data: data[IS_NOT_MET],
+                    clickable: false
+                }
+            }, {
+                geoCoord: {
+                    'mine': [location.longitude, location.latitude]
+                },
+                type: 'map',
+                mapType: 'none',
+                data: [],
+                markPoint: {
+                    symbol: 'circle',
+                    effect: {
+                        show: true,
+                        color: color.primary
+                    },
+                    data: [{
+                        name: 'mine',
+                        value: 1
+                    }],
+                    clickable: false
+                }
+            }]
         }
-        // removes markerPlayers from the map and arrary 
-        // that do not exist this time
-        for (var j = this.markerPlayers.length - 1; j >= 0; --j) {
-            if (this.markerPlayers[j] && !this.markerPlayers[j]._isOnMap) {
-                this.map.removeOverlay(this.markerPlayers[j].marker);
-                delete this.markerPlayers[j];
-            }
-        }
+
+        this.BMapExt.setOption(option);
     };
 
 

@@ -33,14 +33,13 @@ define(function(require) {
 
         // geo location
         this.isUpdatingLocation = true;
-        this._fakeMyLocations(1000);
         this.location = new Location();
         var isLocationSupported = this.location.check();
         if (!isLocationSupported) {
             this._log('Geo location is not supported.', true);
         } else {
             this._log('Geo location is supported.');
-            // this.updateLocationStart();
+            this.updateLocationStart();
         }
 
         $('#tab-explore').on('show', function() {
@@ -60,12 +59,12 @@ define(function(require) {
                 that.staticsChart.initChart();
             }
             that.updateLocationStop();
-            
+
             $('#staticsDurationSelect').on('change', function() {
                 var chart = $('#staticsChartSelect').val();
                 that.staticsChart.updateChart(this.value, chart);
             });
-            
+
             $('#staticsChartSelect').on('change', function() {
                 var duration = $('#staticsDurationSelect').val();
                 if (this.value === that.staticsChart.ChartType.amount) {
@@ -88,14 +87,13 @@ define(function(require) {
      * update my location constantly
      */
     Passerby.prototype.updateLocationStart = function() {
-        // this._fakePlayers(10);
         this.isUpdatingLocation = true;
         this._updateLocation();
 
         var that = this;
         this._updateLocationHandler = setTimeout(function() {
             that.updateLocationStart();
-        }, 5000);
+        }, 10000);
     };
 
 
@@ -116,13 +114,11 @@ define(function(require) {
      * update player positions and update the map
      */
     Passerby.prototype.updatePlayers = function() {
-        var that = this;
-
-        this._updatePlayersHandler = setTimeout(function() {
-            that._fakePlayersMoved(0, 0);
-            that.exploreMap.updatePlayers(that.players);
-            that.updatePlayers();
-        }, 200);
+        if (this.players.length === 0) {
+            this._fakePlayers(10);
+        }
+        this._fakePlayersMoved(2, 2);
+        this.exploreMap.updatePlayers(this.players);
     };
 
 
@@ -145,6 +141,8 @@ define(function(require) {
             that.location.location = longitude;
             that.location.latitude = latitude;
             that.exploreMap.updateLocation(that.location);
+
+            that.updatePlayers();
         }, function(e) {
             that._log('Fail to get location. Please try opening GPS.', true);
             that._log(e);
@@ -179,23 +177,6 @@ define(function(require) {
 
 
     /**
-     * make faking locations for test
-     * @param  {number} cnt number of locations
-     */
-    Passerby.prototype._fakeMyLocations = function(cnt) {
-        this._geoId = 0;
-        var x = 121.601307;
-        var y = 31.1822548;
-        this._geoArr = [];
-        for (var i = 0; i < cnt; ++i) {
-            this._geoArr.push([x + 0.0003 * (i + Math.random()),
-                    y + 0.0001 * (i + Math.random())]);
-        }
-    }
-
-
-
-    /**
      * make faking players for test
      * @param  {number} cnt number of players
      */
@@ -205,9 +186,9 @@ define(function(require) {
             for (var i = cnt - 1; i >= 0; --i) {
                 var id = (cnt - i).toString();
                 var latitude = this.location.latitude
-                        + (Math.random() - 0.5) * 0.01;
+                        + (Math.random() - 0.5) * 0.1;
                 var longitude = this.location.longitude
-                        + (Math.random() - 0.5) * 0.01;
+                        + (Math.random() - 0.5) * 0.1;
                 this.players.push(new Player(id, longitude, latitude));
             }
         }
@@ -235,8 +216,8 @@ define(function(require) {
         // update postions to those not deleted
         for (var i = len - 1 - deleteCnt; i >= 0; --i) {
             if (this.players[i]) {
-                this.players[i].longitude += (Math.random() - 0.5) * 0.0005;
-                this.players[i].latitude += (Math.random() - 0.5) * 0.0005;
+                this.players[i].longitude += (Math.random() - 0.5) * 0.01;
+                this.players[i].latitude += (Math.random() - 0.5) * 0.01;
             }
         }
 

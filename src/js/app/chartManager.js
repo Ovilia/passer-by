@@ -276,7 +276,8 @@ define(function(require) {
                                 offset: 1,
                                 color: color.secondary
                             }],
-                            minAlpha: 0.2
+                            minAlpha: 0.2,
+                            unifyValue: 2
                         }
                     }
                 }]
