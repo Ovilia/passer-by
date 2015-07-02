@@ -104,7 +104,7 @@ define(function(require) {
         }
         var baiduPoint = new BMap.Point(longitude, latitude);
         this.markerMe.setPosition(baiduPoint);
-        this.map.centerAndZoom(baiduPoint, this.mapZoom);
+        this.map.centerAndZoom(baiduPoint, this.map.getZoom());
     }
 
 

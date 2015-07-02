@@ -82,6 +82,7 @@ define(function(require) {
      * @param  {ChartType} chartType chart type
      */
     ChartManager.prototype.updateChart = function(durationType, chartType) {
+        var that = this;
         if (durationType != this.durationType || chartType != this.chartType) {
             switch(chartType) {
                 case this.ChartType.amount:
@@ -90,8 +91,9 @@ define(function(require) {
                     break;
 
                 case this.ChartType.history:
-                    var option = this._getHistoryOption();
-                    this.mapOperator.setOption(option);
+                    this._getHistoryOption(function(option) {
+                        that.mapOperator.setOption(option);
+                    });
                     break;
 
                 case this.ChartType.hotspot:
@@ -243,64 +245,47 @@ define(function(require) {
 
     /**
      * get chart option of history chart
-     * @return {Object} option
+     * @param {Function} callback callback when get option
      */
-    ChartManager.prototype._getHistoryOption = function() {
+    ChartManager.prototype._getHistoryOption = function(callback) {
         this.mapOperator.updateWithBaiduLocation(
             this.location.longitude,
             this.location.latitude
         );
 
-        var heatData = [];
-        for (var i = 0; i < 1000; ++i) {
-            heatData.push([
-                this.location.longitude + Math.random() * 0.5 - 0.4,
-                this.location.latitude + Math.random() * 0.4 - 0.2,
-                Math.floor(Math.random())
-            ]);
-        }
-        for (var j = 0; j < 20; ++j) {
-            var x = Math.random() * 0.25;
-            var y = Math.random() * 0.4;
-            var cnt = Math.random() * 10;
-            for (var i = 0; i < cnt; ++i) {
-                heatData.push([
-                    this.location.longitude + Math.random() * 0.02 - 0.2 + x,
-                    this.location.latitude + Math.random() * 0.01 - 0.3 + y,
-                    1
-                ]);
-            }
-        }
-
-        var option = {
-            color: color.colorSeries(),
-            series: [{
-                type: 'map',
-                data: [],
-                mapType: 'none',
-                heatmap: {
-                    data: heatData,
-                    itemStyle: {
-                        gradientColors: [{
-                            offset: 0.4,
-                            color: color.primary
-                        }, {
-                            offset: 0.6,
-                            color: color.green
-                        }, {
-                            offset: 0.8,
-                            color: color.yellow
-                        }, {
-                            offset: 1,
-                            color: color.secondary
-                        }],
-                        minAlpha: 0.2
+        Dom7.getJSON('res/json/heatmap.json', function(heatData) {
+            var option = {
+                color: color.colorSeries(),
+                series: [{
+                    type: 'map',
+                    data: [],
+                    mapType: 'none',
+                    heatmap: {
+                        data: heatData,
+                        itemStyle: {
+                            gradientColors: [{
+                                offset: 0.6,
+                                color: color.primary
+                            }, {
+                                offset: 0.8,
+                                color: color.green
+                            }, {
+                                offset: 0.95,
+                                color: color.yellow
+                            }, {
+                                offset: 1,
+                                color: color.secondary
+                            }],
+                            minAlpha: 0.2
+                        }
                     }
-                }
-            }]
-        };
+                }]
+            };
 
-        return option;
+            if (callback) {
+                callback(option);
+            }
+        });
     };
 
     /**

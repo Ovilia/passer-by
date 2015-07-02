@@ -40,7 +40,7 @@ define(function(require) {
             this._log('Geo location is not supported.', true);
         } else {
             this._log('Geo location is supported.');
-            this.updateLocationStart();
+            // this.updateLocationStart();
         }
 
         $('#tab-explore').on('show', function() {
@@ -138,38 +138,17 @@ define(function(require) {
         if (!this.isUpdatingLocation) {
             return;
         }
-
-        // if (this._isDebug) {
-        //     if (this._geoId < this._geoArr.length) {
-        //         this.exploreMap.updateLocation(this._geoArr[this._geoId][0],
-        //                 this._geoArr[this._geoId][1]);
-        //         this.location.latitude = this._geoArr[this._geoId][1];
-        //         this.location.longitude = this._geoArr[this._geoId][0];
-        //         ++this._geoId;
-        //         // this._fakePlayersMoved(5, 5);
-        //         // this.exploreMap.updatePlayers(this.players);
-        //     }
-        // } else {
-            var that = this;
-
-            this.location.getLocation(function(longitude, latitude) {
-                that._log('latitude: ' + latitude + ', longitude: ' + longitude);
-                // update map position
-                that.location.location = longitude;
-                that.location.latitude = latitude;
-                that.exploreMap.updateLocation(that.location);
-
-                // fake players for debug
-                // that._fakePlayers(20);
-                // that.exploreMap.updatePlayers(that.players);
-
-                // that.updatePlayers();
-            }, function(e) {
-                that._log('Fail to get location. Please try opening GPS.', true);
-                that._log(e);
-            });
-        // }
-
+        var that = this;
+        this.location.getLocation(function(longitude, latitude) {
+            that._log('latitude: ' + latitude + ', longitude: ' + longitude);
+            // update map position
+            that.location.location = longitude;
+            that.location.latitude = latitude;
+            that.exploreMap.updateLocation(that.location);
+        }, function(e) {
+            that._log('Fail to get location. Please try opening GPS.', true);
+            that._log(e);
+        });
     };
 
     /*****************************************************************
