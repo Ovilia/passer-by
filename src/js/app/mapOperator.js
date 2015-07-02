@@ -59,7 +59,7 @@ define(function(require) {
         var that = this;
         this.getBaiduLocation(
             location.longitude,
-            longitude.latitude,
+            location.latitude,
 
             function(longitude, latitude) {
                 location.longitude = longitude;
@@ -95,7 +95,6 @@ define(function(require) {
      * @param  {number} latitude  latitude in baidu map
      */
     MapOperator.prototype.updateWithBaiduLocation = function(longitude, latitude) {
-        this.map.centerAndZoom(baiduPoint, this.mapZoom);
         // update markerMe
         if (!this.markerMe) {
             this._initMyMarker({
@@ -105,6 +104,7 @@ define(function(require) {
         }
         var baiduPoint = new BMap.Point(longitude, latitude);
         this.markerMe.setPosition(baiduPoint);
+        this.map.centerAndZoom(baiduPoint, this.mapZoom);
     }
 
 

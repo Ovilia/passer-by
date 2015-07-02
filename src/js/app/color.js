@@ -6,6 +6,9 @@ define(function(require) {
         this.primary = '#58FAFF';
         this.secondary = '#FF6B76';
 
+        this.yellow = '#FFF158';
+        this.green = '#83FF58';
+
         this.back = '#212838';
         this.backLight = '#343f58';
         this.backLighter = '#475678';

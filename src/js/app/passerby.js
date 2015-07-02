@@ -157,7 +157,7 @@ define(function(require) {
                 // update map position
                 that.location.location = longitude;
                 that.location.latitude = latitude;
-                that.exploreMap.updateLocation(longitude, latitude);
+                that.exploreMap.updateLocation(that.location);
 
                 // fake players for debug
                 // that._fakePlayers(20);

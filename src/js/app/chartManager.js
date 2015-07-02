@@ -246,56 +246,56 @@ define(function(require) {
      * @return {Object} option
      */
     ChartManager.prototype._getHistoryOption = function() {
+        this.mapOperator.updateWithBaiduLocation(
+            this.location.longitude,
+            this.location.latitude
+        );
+
         var heatData = [];
         for (var i = 0; i < 1000; ++i) {
             heatData.push([
-                this.location.longitude,
-                this.location.latitude,
+                this.location.longitude + Math.random() * 0.5 - 0.4,
+                this.location.latitude + Math.random() * 0.4 - 0.2,
                 Math.floor(Math.random())
             ]);
         }
-        this.mapOperator.updateWithBaiduLocation(this.location.longitude,
-            this.location.latitude);
-        // for (var i = 0; i < 500; ++i) {
-        //     heatData.push([
-        //         this.location.longitude + Math.random() * 0.1 - 0.2,
-        //         this.location.latitude + Math.random() * 0.05 + 0.05,
-        //         Math.floor(Math.random())
-        //     ]);
-        // }
+        for (var j = 0; j < 20; ++j) {
+            var x = Math.random() * 0.25;
+            var y = Math.random() * 0.4;
+            var cnt = Math.random() * 10;
+            for (var i = 0; i < cnt; ++i) {
+                heatData.push([
+                    this.location.longitude + Math.random() * 0.02 - 0.2 + x,
+                    this.location.latitude + Math.random() * 0.01 - 0.3 + y,
+                    1
+                ]);
+            }
+        }
 
         var option = {
             color: color.colorSeries(),
             series: [{
-                name: 'a',
-                type: 'map',
-                mapType: 'none',
-                data: [],
-                geoCoord: {
-                    'a': [this.location.longitude, this.location.latitude]
-                }
-            }, {
                 type: 'map',
                 data: [],
                 mapType: 'none',
                 heatmap: {
                     data: heatData,
                     itemStyle: {
-                        color: [{
+                        gradientColors: [{
                             offset: 0.4,
                             color: color.primary
                         }, {
+                            offset: 0.6,
+                            color: color.green
+                        }, {
+                            offset: 0.8,
+                            color: color.yellow
+                        }, {
                             offset: 1,
                             color: color.secondary
-                        }]
+                        }],
+                        minAlpha: 0.2
                     }
-                },
-                markPoint: {
-                    symbol: 'emptyCircle',
-                    data: [{
-                        name: 'a',
-                        value: 10
-                    }]
                 }
             }]
         };
