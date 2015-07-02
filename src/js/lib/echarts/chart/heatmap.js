@@ -86,6 +86,8 @@ define(function (require) {
                         }
                     });
                     this.zr.addShape(image);
+                    console.log('chart/heatmap 89l, canvas size: ' + canvas.width
+                        + ', ' + canvas.height);
                 }
             }
         }

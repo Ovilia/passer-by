@@ -52,13 +52,14 @@ define(function(require) {
         /**
          * statics page
          */
-        this.staticsChart = new ChartManager($('#statics-chart')[0],
-                $('#statics-map')[0], this.location);
-
         $('#tab-statics').on('show', function() {
-            that.updateLocationStop();
+            if (!that.staticsChart) {
+                that.staticsChart = new ChartManager($('#statics-chart')[0],
+                        $('#statics-map')[0], that.location);
 
-            that.staticsChart.init();
+                that.staticsChart.initChart();
+            }
+            that.updateLocationStop();
             
             $('#staticsDurationSelect').on('change', function() {
                 var chart = $('#staticsChartSelect').val();
@@ -73,6 +74,8 @@ define(function(require) {
                 } else {
                     $('#statics-chart').hide();
                     $('#statics-map').show();
+
+                    that.staticsChart.initMap();
                 }
                 that.staticsChart.updateChart(duration, this.value);
             });
@@ -152,6 +155,8 @@ define(function(require) {
             this.location.getLocation(function(longitude, latitude) {
                 that._log('latitude: ' + latitude + ', longitude: ' + longitude);
                 // update map position
+                that.location.location = longitude;
+                that.location.latitude = latitude;
                 that.exploreMap.updateLocation(longitude, latitude);
 
                 // fake players for debug
@@ -187,7 +192,7 @@ define(function(require) {
             $('#log').append('<p>' + JSON.stringify(obj) + '</p>');
             console.log(obj);
             if (isAlert) {
-                this.f7.alert(obj);
+                // this.f7.alert(obj);
             }
         }
     };

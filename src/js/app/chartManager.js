@@ -8,6 +8,8 @@ define(function(require) {
 
     var echarts = require('echarts');
     require('echarts/chart/bar');
+    require('echarts/chart/map');
+    require('echarts/chart/heatmap');
 
     var MapOperator = require('mapOperator');
 
@@ -15,14 +17,17 @@ define(function(require) {
 
     function ChartManager(chartDom, mapDom, location) {
         this.chartDom = chartDom;
+        this.mapDom = mapDom;
         this.location = location;
-        this.mapOperator = new MapOperator(mapDom);
 
         this.durationType = null;
         this.chartType = null;
 
-        this.defaultPos = [];
+        this.chart = null;
+        this.mapOperator = null;
+        this.map = null;
 
+        this.defaultPos = [];
     }
 
 
@@ -30,9 +35,20 @@ define(function(require) {
     /**
      * init chart to dom
      */
-    ChartManager.prototype.init = function() {
+    ChartManager.prototype.initChart = function() {
         this.chart = echarts.init(this.chartDom);
         this.updateChart(this.DurationType.day, this.ChartType.amount);
+    };
+
+
+
+    /**
+     * init map to dom
+     */
+    ChartManager.prototype.initMap = function() {
+        if (!this.mapOperator) {
+            this.mapOperator = new MapOperator(this.mapDom);
+        }
     };
 
 
@@ -75,6 +91,7 @@ define(function(require) {
 
                 case this.ChartType.history:
                     var option = this._getHistoryOption();
+                    this.mapOperator.setOption(option);
                     break;
 
                 case this.ChartType.hotspot:
@@ -82,7 +99,7 @@ define(function(require) {
                     break;
 
                 default:
-                    return;    
+                    return;
             }
         }
     };
@@ -229,11 +246,61 @@ define(function(require) {
      * @return {Object} option
      */
     ChartManager.prototype._getHistoryOption = function() {
-        // var that = this;
-        // this.location.getLocation(function(longitude, latitude) {
-        //     that.mapOperator.updateLocation(longitude, latitude);
-        // });
-        this.mapOperator.map.centerAndZoom('上海');
+        var heatData = [];
+        for (var i = 0; i < 1000; ++i) {
+            heatData.push([
+                this.location.longitude,
+                this.location.latitude,
+                Math.floor(Math.random())
+            ]);
+        }
+        this.mapOperator.updateWithBaiduLocation(this.location.longitude,
+            this.location.latitude);
+        // for (var i = 0; i < 500; ++i) {
+        //     heatData.push([
+        //         this.location.longitude + Math.random() * 0.1 - 0.2,
+        //         this.location.latitude + Math.random() * 0.05 + 0.05,
+        //         Math.floor(Math.random())
+        //     ]);
+        // }
+
+        var option = {
+            color: color.colorSeries(),
+            series: [{
+                name: 'a',
+                type: 'map',
+                mapType: 'none',
+                data: [],
+                geoCoord: {
+                    'a': [this.location.longitude, this.location.latitude]
+                }
+            }, {
+                type: 'map',
+                data: [],
+                mapType: 'none',
+                heatmap: {
+                    data: heatData,
+                    itemStyle: {
+                        color: [{
+                            offset: 0.4,
+                            color: color.primary
+                        }, {
+                            offset: 1,
+                            color: color.secondary
+                        }]
+                    }
+                },
+                markPoint: {
+                    symbol: 'emptyCircle',
+                    data: [{
+                        name: 'a',
+                        value: 10
+                    }]
+                }
+            }]
+        };
+
+        return option;
     };
 
     /**

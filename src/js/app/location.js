@@ -36,7 +36,6 @@ define(function(require) {
      */
     Location.prototype.getLocation = function(success, error) {
         var that = this;
-        
         if (this.geo) {
             this.geo.getCurrentPosition(function (pos) {
                 var latitude = pos.coords.latitude;

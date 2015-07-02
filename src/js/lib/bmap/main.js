@@ -251,6 +251,7 @@ define(function (require) {
             for (var i = 0, item; item = series[i++];) {
                 var markPoint = item.markPoint || {};
                 var markLine = item.markLine || {};
+                var heatmap = item.heatmap || {};
 
                 var data = markPoint.data;
                 if (data && data.length) {
@@ -266,6 +267,19 @@ define(function (require) {
                         self._AddPos(data[k][1]);
                     }
                 }
+
+                data = heatmap.data;
+                if (data && data.length) {
+                    for (var k = 0, len = data.length; k < len; k++) {
+                        var geo = data[k];
+                        var pos = self.geoCoord2Pixel(geo);                   
+                        data[k][3] = pos[0] - self._mapOffset[0];
+                        data[k][4] = pos[1] - self._mapOffset[1];
+                    }
+                }
+                // mark heatmap position to be already transformed,
+                // and thus do not need transform any more in map.js
+                heatmap.needsTransform = false;
             }
 
             self._ec.setOption(option, notMerge);

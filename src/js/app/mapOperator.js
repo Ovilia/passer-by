@@ -19,7 +19,7 @@ define(function(require) {
 
         this.mapDom = mapDom;
         this.map = null;
-        this.mapZoom = 18;
+        this.mapZoom = 16;
 
         this.markerMe = null;
 
@@ -36,31 +36,76 @@ define(function(require) {
         this.markerPlayers = [];
 
         this._init();
+        window.map = this;
     }
 
 
 
     /**
-     * update geo location in map
-     * @param  {number} latitude  latitude of geo location 
-     * @param  {number} longitude longitude of geo location
+     * set option to map
+     * @param {object} option echart option
      */
-    MapOperator.prototype.updateLocation = function(longitude, latitude) {
+    MapOperator.prototype.setOption = function(option) {
+        this.BMapExt.setOption(option);
+    };
+
+
+
+    /**
+     * update geo location in map, and update location instance with baidu location
+     * @param  {Location} location location instance
+     */
+    MapOperator.prototype.updateLocation = function(location) {
+        var that = this;
+        this.getBaiduLocation(
+            location.longitude,
+            longitude.latitude,
+
+            function(longitude, latitude) {
+                location.longitude = longitude;
+                location.latitude = latitude;
+                that.updateWithBaiduLocation(longitude, latitude);
+            }
+        );
+    };
+
+
+
+    /**
+     * get geo location in baidu map
+     * @param {number} longitude longitude from geo device
+     * @param {number} latitude latitude from geo device
+     * @param {Function} callback  callback function when get location
+     */
+    MapOperator.prototype.getBaiduLocation = function(longitude, latitude, callback) {
         var gpsPoint = new BMap.Point(longitude, latitude);
         var that = this;
-        this._getBaiduLocation(gpsPoint, function(longitude, latitude) {
-            var baiduPoint = new BMap.Point(longitude, latitude);
-            that.map.centerAndZoom(baiduPoint, that.mapZoom);
-            // update markerMe
-            if (!that.markerMe) {
-                that._initMyMarker({
-                    x: longitude,
-                    y: latitude
-                });
+        BMap.Convertor.translate(gpsPoint, 0, function(point) {
+            if (callback) {
+                callback(point.lng, point.lat);
             }
-            that.markerMe.setPosition(baiduPoint);
         });
     };
+
+
+
+    /**
+     * update marker in map with baidu location
+     * @param  {number} longitude longitude in baidu map
+     * @param  {number} latitude  latitude in baidu map
+     */
+    MapOperator.prototype.updateWithBaiduLocation = function(longitude, latitude) {
+        this.map.centerAndZoom(baiduPoint, this.mapZoom);
+        // update markerMe
+        if (!this.markerMe) {
+            this._initMyMarker({
+                x: longitude,
+                y: latitude
+            });
+        }
+        var baiduPoint = new BMap.Point(longitude, latitude);
+        this.markerMe.setPosition(baiduPoint);
+    }
 
 
 
@@ -149,10 +194,13 @@ define(function(require) {
      * init map
      */
     MapOperator.prototype._init = function() {
-        var BMapExt = new this.BMapExtension(this.mapDom, BMap, this.echarts, {
+        this.BMapExt = new this.BMapExtension(this.mapDom, BMap, this.echarts, {
             enableMapClick: false
         });
-        this.map = BMapExt.getMap();
+        this.map = this.BMapExt.getMap();
+        var container = this.BMapExt.getEchartsContainer();
+        this.BMapExt.initECharts(container);
+        this.BMapExt.setOption({});
 
         this._initConvertor();
 
@@ -221,22 +269,6 @@ define(function(require) {
 
 
     /**
-     * get geo location in baidu map
-     * @param  {BMap.Point} point of gps location
-     * @param  {Function} callback  callback function when get location
-     */
-    MapOperator.prototype._getBaiduLocation = function(gpsPoint, callback) {
-        var that = this;
-        BMap.Convertor.translate(gpsPoint, 0, function(point) {
-            if (callback) {
-                callback(point.lng, point.lat);
-            }
-        });
-    };
-
-
-
-    /**
      * set map theme to dark
      */
     MapOperator.prototype._setMapStyle = function() {
@@ -268,7 +300,7 @@ define(function(require) {
             "featureType": "road",
             "elementType": "all",
             "stylers": {
-                "color": color.backLighter
+                "color": color.backLight
             }
         }, {
             "featureType": "building",
