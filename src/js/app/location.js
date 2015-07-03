@@ -48,11 +48,18 @@ define(function(require) {
                     }
                 }
             }, function (e) {
+                // TODO: fake position
+                that.longitude = 121.51 + Math.random() * 0.01;
+                that.latitude = 30.99 + Math.random() * 0.01;
+                if (success) {
+                    success(that.longitude, that.latitude);
+                }
+
                 if (error) {
                     error(e);
                 }
             }, {
-                timeout: 30000,
+                timeout: 3000,
                 enableHighAccuracy: true,
                 maximumAge: 0
             });

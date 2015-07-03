@@ -22,6 +22,7 @@ define(function(require) {
         this.mapZoom = 16;
 
         this.markerMe = null;
+        this.markerArea = null;
 
         /**
          * @typedef {MarkerPlayer}
@@ -104,6 +105,8 @@ define(function(require) {
         }
         var baiduPoint = new BMap.Point(longitude, latitude);
         this.markerMe.setPosition(baiduPoint);
+        this.markerArea.setCenter(baiduPoint);
+
         this.map.centerAndZoom(baiduPoint, this.map.getZoom());
     }
 
@@ -165,25 +168,6 @@ define(function(require) {
                     data: data[IS_NOT_MET],
                     clickable: false
                 }
-            }, {
-                geoCoord: {
-                    'mine': [location.longitude, location.latitude]
-                },
-                type: 'map',
-                mapType: 'none',
-                data: [],
-                markPoint: {
-                    symbol: 'circle',
-                    effect: {
-                        show: true,
-                        color: color.primary
-                    },
-                    data: [{
-                        name: 'mine',
-                        value: 1
-                    }],
-                    clickable: false
-                }
             }]
         }
 
@@ -240,6 +224,11 @@ define(function(require) {
         this.markerMe = new BMap.Marker(point);
         this.map.addOverlay(this.markerMe);
         // this.markerMe.setAnimation(BMAP_ANIMATION_BOUNCE);
+        
+        this.markerArea = new BMap.Circle(point), 500, {
+            strokeColor: color.primary
+        };
+        this.map.addOverlay(this.markerArea);
     };
 
 
