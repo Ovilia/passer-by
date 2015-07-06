@@ -52,7 +52,7 @@ define(function(require) {
             this.longitude = pos[0];
             this.latitude = pos[1];
             success(pos[0], pos[1]);
-            ++this._fakeLocationId;
+            this._fakeLocationId += 5;
             if (this._fakeLocationId === this._fakeLocations.length) {
                 this._fakeLocationId = 0;
             }

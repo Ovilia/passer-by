@@ -24,6 +24,8 @@ define(function(require) {
         this.markerMe = null;
         this.markerArea = null;
 
+        this.MEET_DISTANCE = 500; // meters when we think two players meet
+
         /**
          * @typedef {MarkerPlayer}
          * @type {object}
@@ -125,12 +127,23 @@ define(function(require) {
         // player geo location in baidu map
         var geo = [{}, {}];
 
+        var myPoint = new BMap.Point(location.longitude, location.latitude);
+
         for (var i = 0, l = players.length; i < l; ++i) {
             if (!players[i]) {
                 continue;
             }
 
             var name = players[i].id.toString();
+
+            // check if player is met
+            var point = new BMap.Point(players[i].longitude, players[i].latitude);
+            var distance = this.map.getDistance(myPoint, point);
+            if (distance < this.MEET_DISTANCE) {
+                // set player to meet
+                players[i].isMet = true;
+            }
+
             var seriesId = players[i].isMet ? IS_MET : IS_NOT_MET;
             geo[seriesId][name] = players[i].getGeo();
             data[seriesId].push({
@@ -225,9 +238,12 @@ define(function(require) {
         this.map.addOverlay(this.markerMe);
         // this.markerMe.setAnimation(BMAP_ANIMATION_BOUNCE);
         
-        this.markerArea = new BMap.Circle(point), 500, {
-            strokeColor: color.primary
-        };
+        this.markerArea = new BMap.Circle(point, this.MEET_DISTANCE, {
+            fillColor: color.secondary,
+            fillOpacity: 0.1,
+            strokeColor: color.secondary,
+            strokeOpacity: 0.2
+        });
         this.map.addOverlay(this.markerArea);
     };
 

@@ -33,7 +33,9 @@ var driving = new BMap.DrivingRoute(map, {
           lastPos = pos;
           continue;
         }
-        var cnt = 10;
+        var cnt = Math.floor(((lastPos.lng - pos.lng) * (lastPos.lng - pos.lng)
+            + (lastPos.lat - pos.lat) * (lastPos.lat - pos.lat)) * Math.pow(10, 5)) + 2;
+        console.log(cnt);
         for (var j = 0; j < cnt; ++j) {
           travels.push([
             lastPos.lng + (pos.lng - lastPos.lng) * j / cnt,

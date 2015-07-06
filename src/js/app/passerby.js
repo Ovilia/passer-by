@@ -93,7 +93,7 @@ define(function(require) {
         var that = this;
         this._updateLocationHandler = setTimeout(function() {
             that.updateLocationStart();
-        }, 2000);
+        }, 5000);
     };
 
 
@@ -117,8 +117,8 @@ define(function(require) {
         if (this.players.length === 0) {
             this._fakePlayers(10);
         }
-        this._fakePlayersMoved(5, 5);
-        this.exploreMap.updatePlayers(this.players);
+        this._fakePlayersMoved(2, 2);
+        this.exploreMap.updatePlayers(this.players, this.location);
     };
 
 
@@ -136,7 +136,7 @@ define(function(require) {
         }
         var that = this;
         this.location.getLocation(function(longitude, latitude) {
-            that._log('latitude: ' + latitude + ', longitude: ' + longitude);
+            // that._log('latitude: ' + latitude + ', longitude: ' + longitude);
             // update map position
             that.location.location = longitude;
             that.location.latitude = latitude;
