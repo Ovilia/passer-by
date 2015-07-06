@@ -1,0 +1,59 @@
+html
+  head
+
+  body(style='margin: 0')
+    div(id='log' style='width: 100%; height: 100%; position: absolute; top: 0; background-color: #fff; z-index: 10')
+    div(id='map' style='width: 100%; height: 100%; position: absolute; top: 0')
+
+    script(src='js/lib/framework7.js', type='text/javascript')
+    script(src='http://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM', type='text/javascript')
+    script(type='text/javascript').
+      var map = new BMap.Map('map');
+      map.centerAndZoom('上海');
+      map.enableScrollWheelZoom(true);
+
+      var $ = Dom7;
+
+      var routeNames = ['百度研发中心', '人民广场'];
+      var routePolicy = [
+        BMAP_DRIVING_POLICY_LEAST_TIME,
+        BMAP_DRIVING_POLICY_LEAST_DISTANCE,
+        BMAP_DRIVING_POLICY_AVOID_HIGHWAYS
+      ];
+
+      var travels = [];
+      var travelCnt = 0;
+
+      var driving = new BMap.DrivingRoute(map, {
+        renderOptions: {
+          map: map, 
+          autoViewport: true
+        },
+        policy: routePolicy[0],
+        onSearchComplete: function(results){
+          if (driving.getStatus() == BMAP_STATUS_SUCCESS){
+            var plan = results.getPlan(0);
+            var route = plan.getRoute(0);
+            var lastPos = null;
+            for (var i = 0, slen = route.getNumSteps(); i < slen; ++i) {
+              var step = route.getStep(i);
+              var pos = step.getPosition();
+              if (lastPos == null) {
+                travels.push([pos.lng, pos.lat]);
+                lastPos = pos;
+                continue;
+              }
+              var cnt = 10;
+              for (var j = 0; j < cnt; ++j) {
+                travels.push([
+                  lastPos.lng + (pos.lng - lastPos.lng) * j / cnt,
+                  lastPos.lat + (pos.lat - lastPos.lat) * j / cnt
+                ]);
+              }
+              lastPos = pos;
+            }
+            $('#log').html(JSON.stringify(travels));
+          }
+        }
+      });
+      driving.search(routeNames[0], routeNames[1]);

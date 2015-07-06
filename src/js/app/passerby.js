@@ -93,7 +93,7 @@ define(function(require) {
         var that = this;
         this._updateLocationHandler = setTimeout(function() {
             that.updateLocationStart();
-        }, 10000);
+        }, 2000);
     };
 
 
@@ -117,7 +117,7 @@ define(function(require) {
         if (this.players.length === 0) {
             this._fakePlayers(10);
         }
-        this._fakePlayersMoved(2, 2);
+        this._fakePlayersMoved(5, 5);
         this.exploreMap.updatePlayers(this.players);
     };
 
