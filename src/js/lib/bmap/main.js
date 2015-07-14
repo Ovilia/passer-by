@@ -288,12 +288,17 @@ define(function (require) {
         /**
          * 增加x、y坐标
          *
-         * @param {Object} obj  markPoint、markLine data中的项，必须有name
+         * @param {Object} obj markPoint、markLine data中的项
          * @param {Object} geoCoord
          */
         self._AddPos = function (obj) {
-            var coord = this._geoCoord[obj.name]
-            var pos = this.geoCoord2Pixel(coord);
+            var coord = this._geoCoord[obj.name];
+            if (!coord) {
+                // no name exist
+                var pos = this.geoCoord2Pixel(obj.geoCoord);
+            } else {
+                var pos = this.geoCoord2Pixel(coord);
+            }
             obj.x = pos[0] - self._mapOffset[0];
             obj.y = pos[1] - self._mapOffset[1];
         };
