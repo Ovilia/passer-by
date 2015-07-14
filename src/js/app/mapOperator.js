@@ -24,7 +24,7 @@ define(function(require) {
         this.markerMe = null;
         this.markerArea = null;
 
-        this.MEET_DISTANCE = 500; // meters when we think two players meet
+        this.MEET_DISTANCE = 1000; // meters when we think two players meet
 
         /**
          * @typedef {MarkerPlayer}
@@ -47,9 +47,10 @@ define(function(require) {
     /**
      * set option to map
      * @param {object} option echart option
+     * @param {bool} notMerge not merge when set option
      */
-    MapOperator.prototype.setOption = function(option) {
-        this.BMapExt.setOption(option);
+    MapOperator.prototype.setOption = function(option, notMerge) {
+        this.BMapExt.setOption(option, notMerge);
     };
 
 
@@ -225,6 +226,10 @@ define(function(require) {
 
         this.map.enableScrollWheelZoom(true);
         this.map.centerAndZoom('上海');
+
+        // this.map.addEventListener('moving', function(e) {
+        //     console.log(e);
+        // });
     };
 
 

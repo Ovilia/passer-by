@@ -73,7 +73,7 @@ define(function(require) {
     ChartManager.prototype.ChartType = {
         amount: 'amount',
         history: 'history',
-        hotspot: 'hotspot'
+        spread: 'spread'
     }
 
     /**
@@ -92,12 +92,13 @@ define(function(require) {
 
                 case this.ChartType.history:
                     this._getHistoryOption(function(option) {
-                        that.mapOperator.setOption(option);
+                        that.mapOperator.setOption(option, true);
                     });
                     break;
 
-                case this.ChartType.hotspot:
-                    var option = this._getHotspotOption();
+                case this.ChartType.spread:
+                    var option = this._getSpreadOption(durationType);
+                    that.mapOperator.setOption(option, true);
                     break;
 
                 default:
@@ -146,7 +147,7 @@ define(function(require) {
 
             case this.DurationType.month:
                 var name = '本月';
-                for (var i = 0; i < 30; ++i) {
+                for (var i = 1; i < 31; ++i) {
                     xs.push(i + '日');
                     var n1 = Math.max(0, Math.floor((i - 5) * (i - 5) * 2 + 10
                             - Math.random() * 50));
@@ -159,7 +160,7 @@ define(function(require) {
 
             case this.DurationType.year:
                 var name = '今年';
-                for (var i = 0; i < 12; ++i) {
+                for (var i = 1; i <= 12; ++i) {
                     xs.push(i + '月');
                     var n1 = Math.max(0, Math.floor((i - 5) * (i - 5) * 10 + 20
                             - Math.random() * 50));
@@ -293,8 +294,123 @@ define(function(require) {
      * get chart option of hotspot chart
      * @return {Object} option
      */
-    ChartManager.prototype._getHotspotOption = function() {
+    ChartManager.prototype._getSpreadOption = function(durationType) {
+        var time = [];
+        switch(durationType) {
+            case this.DurationType.day:
+                for (var i = 0; i < 24; ++i) {
+                    time.push(i + ':00');
+                }
+                break;
 
+            case this.DurationType.week:
+                var weekdays = ['一', '二', '三', '四', '五', '六', '日'];
+                for (var i = 0; i < 7; ++i) {
+                    time.push('星期' + weekdays[i]);
+                }
+                break;
+
+            case this.DurationType.month:
+                for (var i = 1; i < 30; ++i) {
+                    time.push(i + '日');
+                }
+                break;
+
+            case this.DurationType.year:
+                for (var i = 1; i <= 12; ++i) {
+                    time.push(i + '月');
+                }
+                break;
+
+            default:
+                return null;
+        }
+
+        var option = {
+            color: color.colorSeries(),
+            series : [
+                {
+                    name:'北京',
+                    type:'map',
+                    mapType: 'none',
+                    data:[{}],
+
+                    markLine : {
+                        smooth:true,
+                        effect : {
+                            show: true,
+                            scaleSize: 1,
+                            period: 30,
+                            color: '#fff',
+                            shadowBlur: 10
+                        },
+                        itemStyle : {
+                            normal: {
+                                borderWidth:1,
+                                lineStyle: {
+                                    type: 'solid',
+                                    shadowBlur: 10
+                                }
+                            }
+                        },
+                        data : [
+                            [{
+                                geoCoord: [121.65, 31.14]
+                            },
+                            {
+                                geoCoord: [121.22, 31.21]
+                            }],
+                            [{
+                                geoCoord: [121.57, 31.17]
+                            },
+                            {
+                                geoCoord: [123.57, 31.15]
+                            }]
+                        ]
+                    }
+                }
+            ]
+            // timeline: {
+            //     data: time,
+            //     autoPlay: true,
+            //     playInterval: 1000
+            // },
+            // animation: false,
+            // series: [{
+            //     name: 'first',
+            //     type: 'map',
+            //     mapType: 'none',
+            //     roam: true,
+            //     smooth: true,
+            //     data:[],
+            //     hoverable: false,
+            //     markLine: {
+            //         clickable: false,
+            //         // effect: {
+            //         //     show: true
+            //         // },
+            //         itemStyle: {
+            //             normal: {
+            //                 borderWidth: 1,
+            //                 lineStyle: {
+            //                     type: 'solid',
+            //                     shadowBlur: 10
+            //                 }
+            //             }
+            //         },
+            //         data: [
+            //             [{name:'上海', value: 10, smoothness:0.2}, {name:'广州',value:95}]
+            //         ]
+            //     },
+            //     geoCoord: {
+            //         '上海': [121.4648,31.2891],
+            //         '广州': [113.5107,23.2196],
+            //         '北京': [116.4551,40.2539]
+            //     }
+            // }]
+        };
+
+        return option;
     };
 
 
