@@ -57,8 +57,8 @@ html
                 && Math.abs(locations[i].lat - locations[j].lat) < 0.0001
                 && Math.abs(locations[i].lng - locations[j].lng) < 0.0001) {
               meets.push({
-                uid1: i,
-                uid2: j,
+                uid1: locations[i].uid,
+                uid2: locations[j].uid,
                 time: locations[i].time,
                 lat1: locations[i].lat,
                 lat2: locations[j].lat,

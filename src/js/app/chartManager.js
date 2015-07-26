@@ -86,19 +86,15 @@ define(function(require) {
         if (durationType != this.durationType || chartType != this.chartType) {
             switch(chartType) {
                 case this.ChartType.amount:
-                    var option = this._getAmountOption(durationType);
-                    this.chart.setOption(option, true);
+                    var option = this._setAmountOption(durationType);
                     break;
 
                 case this.ChartType.history:
-                    this._getHistoryOption(function(option) {
-                        that.mapOperator.setOption(option, true);
-                    });
+                    this._setHistoryOption();
                     break;
 
                 case this.ChartType.spread:
-                    var option = this._getSpreadOption(durationType);
-                    that.mapOperator.setOption(option, true);
+                    var option = this._setSpreadOption(durationType);
                     break;
 
                 default:
@@ -108,11 +104,11 @@ define(function(require) {
     };
 
     /**
-     * get chart option of amount chart
+     * set chart option of amount chart
      * @param  {DurationType} durationType duration type
      * @return {Object} option
      */
-    ChartManager.prototype._getAmountOption = function(durationType) {
+    ChartManager.prototype._setAmountOption = function(durationType) {
         var xs = [];
         var discoverData = [];
         var victimData = [];
@@ -175,7 +171,7 @@ define(function(require) {
                 return;
         }
 
-        return {
+        var option = {
             color: color.colorSeries(),
             xAxis: [{
                 type: 'category',
@@ -242,18 +238,19 @@ define(function(require) {
                 stack: 'all'
             }]
         };
+        this.chart.setOption(option, true);
     }
 
     /**
-     * get chart option of history chart
-     * @param {Function} callback callback when get option
+     * set chart option of history chart
      */
-    ChartManager.prototype._getHistoryOption = function(callback) {
+    ChartManager.prototype._setHistoryOption = function() {
         this.mapOperator.updateWithBaiduLocation(
             this.location.longitude,
             this.location.latitude
         );
 
+        var that = this;
         Dom7.getJSON('res/json/heatmap.json', function(heatData) {
             var option = {
                 color: color.colorSeries(),
@@ -284,17 +281,14 @@ define(function(require) {
                 }]
             };
 
-            if (callback) {
-                callback(option);
-            }
+            that.mapOperator.setOption(option, true);
         });
     };
 
     /**
-     * get chart option of hotspot chart
-     * @return {Object} option
+     * set chart option of hotspot chart
      */
-    ChartManager.prototype._getSpreadOption = function(durationType) {
+    ChartManager.prototype._setSpreadOption = function(durationType) {
         var time = [];
         switch(durationType) {
             case this.DurationType.day:
@@ -326,25 +320,62 @@ define(function(require) {
                 return null;
         }
 
-        var option = {
-            color: color.colorSeries(),
-            series : [
-                {
-                    name:'北京',
-                    type:'map',
+        var that = this;
+        Dom7.getJSON('res/json/meet.json', function(data) {
+            var generations = [];
+            var userCnt = 10;
+            for (var gid = 0; gid < 1; ++gid) {
+                var generation = [];
+                for (var mid = 0, mlen = data.length; mid < mlen; ++mid) {
+                    var meets = generation[data[mid].uid1];
+                    if (!meets) {
+                        generation[data[mid].uid1] = [];
+                    }
+                    generation[data[mid].uid1].push(mid);
+                }
+                generations.push(generation);
+            }
+            console.log(generations);
+
+            var geoCoord = [];
+            for (var gid = 0; gid < 1; ++gid) {
+                var generation = generations[gid];
+                for (var uid = 0, ulen = generation.length; uid < ulen; ++uid) {
+                    for (var mid = 0, mlen = generation[uid].length; mid < mlen; ++mid) {
+                        var id = generation[uid][mid];
+                        geoCoord.push([{
+                            geoCoord: [
+                                data[generation[uid][0]].lng1,
+                                data[generation[uid][0]].lat1
+                            ]
+                        }, {
+                            geoCoord: [
+                                data[id].lng1,
+                                data[id].lat1
+                            ]
+                        }]);
+                    }
+                }
+            }
+
+            var option = {
+                color: color.colorSeries(),
+                series: [{
+                    name: '第0代',
+                    type: 'map',
                     mapType: 'none',
-                    data:[{}],
+                    data: [{}],
 
                     markLine : {
-                        smooth:true,
-                        effect : {
+                        smooth: true,
+                        effect: {
                             show: true,
                             scaleSize: 1,
                             period: 30,
                             color: '#fff',
                             shadowBlur: 10
                         },
-                        itemStyle : {
+                        itemStyle: {
                             normal: {
                                 borderWidth:1,
                                 lineStyle: {
@@ -353,64 +384,12 @@ define(function(require) {
                                 }
                             }
                         },
-                        data : [
-                            [{
-                                geoCoord: [121.65, 31.14]
-                            },
-                            {
-                                geoCoord: [121.22, 31.21]
-                            }],
-                            [{
-                                geoCoord: [121.57, 31.17]
-                            },
-                            {
-                                geoCoord: [123.57, 31.15]
-                            }]
-                        ]
+                        data: geoCoord
                     }
-                }
-            ]
-            // timeline: {
-            //     data: time,
-            //     autoPlay: true,
-            //     playInterval: 1000
-            // },
-            // animation: false,
-            // series: [{
-            //     name: 'first',
-            //     type: 'map',
-            //     mapType: 'none',
-            //     roam: true,
-            //     smooth: true,
-            //     data:[],
-            //     hoverable: false,
-            //     markLine: {
-            //         clickable: false,
-            //         // effect: {
-            //         //     show: true
-            //         // },
-            //         itemStyle: {
-            //             normal: {
-            //                 borderWidth: 1,
-            //                 lineStyle: {
-            //                     type: 'solid',
-            //                     shadowBlur: 10
-            //                 }
-            //             }
-            //         },
-            //         data: [
-            //             [{name:'上海', value: 10, smoothness:0.2}, {name:'广州',value:95}]
-            //         ]
-            //     },
-            //     geoCoord: {
-            //         '上海': [121.4648,31.2891],
-            //         '广州': [113.5107,23.2196],
-            //         '北京': [116.4551,40.2539]
-            //     }
-            // }]
-        };
-
-        return option;
+                }]
+            };
+            that.mapOperator.setOption(option, true);
+        });
     };
 
 
