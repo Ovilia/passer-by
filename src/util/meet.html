@@ -1,0 +1,63 @@
+<html><head></head><body style="margin: 0"><div id="log" style="width: 100%; height: 100%; position: absolute; top: 0; background-color: #fff; z-index: 10"></div><div id="map" style="width: 100%; height: 100%; position: absolute; top: 0"></div><script src="../js/lib/framework7.js" type="text/javascript"></script><script src="http://api.map.baidu.com/api?v=2.0&amp;ak=ZUONbpqGBsYGXNIYHicvbAbM" type="text/javascript"></script><script type="text/javascript">var map = new BMap.Map('map');
+map.centerAndZoom('上海');
+map.enableScrollWheelZoom(true);
+
+var $ = Dom7;
+
+var routeNames = ['百度研发中心', '人民广场', '上海南站', '长风公园',
+  '复旦大学', '上海交通大学', '中山公园', '世纪大道'];
+var geo = new BMap.Geocoder();
+
+var userCnt = 10;
+var meets = [];
+var locations = [];
+var id = 0;
+var cnt = 0;
+for (var uid = 0; uid < userCnt; ++uid) {
+  for (var day = 1; day < 31; ++day) {
+    var date = new Date('2015-07-' + day);
+    var pos = '上海' + routeNames[Math.floor(Math.random() * (routeNames.length - 1))];
+    locations.push({
+      uid: uid,
+      time: date
+    });
+    (function(pos, id) {
+      geo.getPoint(pos, function(point) {
+        locations[id].lat = point.lat + Math.random() * 0.0001;
+        locations[id].lng = point.lng + Math.random() * 0.0001;
+
+        if (++cnt === userCnt * 30) {
+          //- $('#log').html(JSON.stringify(locations));
+
+          calculateMeet(locations);
+        }
+        //- console.log(cnt);
+      });
+    })(pos, id);
+    ++id;
+  }
+}
+
+function calculateMeet(locations) {
+  var meets = [];
+  for (var i = 0, len = locations.length; i < len; ++i) {
+    for (var j = i + 1; j < len; ++j) {
+      if (locations[i].uid !== locations[j].uid
+          && Math.abs(locations[i].time - locations[j].time) < 100000
+          && Math.abs(locations[i].lat - locations[j].lat) < 0.0001
+          && Math.abs(locations[i].lng - locations[j].lng) < 0.0001) {
+        meets.push({
+          uid1: i,
+          uid2: j,
+          time: locations[i].time,
+          lat1: locations[i].lat,
+          lat2: locations[j].lat,
+          lng1: locations[i].lng,
+          lng2: locations[j].lng,
+        });
+      }
+    }
+  }
+  $('#log').html(JSON.stringify(meets));
+  console.log(meets.length);
+}</script></body></html>
