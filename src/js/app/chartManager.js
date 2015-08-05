@@ -361,7 +361,10 @@ define(function(require) {
                                 }
                             }
                         },
-                        data: geo
+                        data: geo,
+                        bundling: {
+                            enable: true
+                        }
                     }
                 };
                 series.push(serie);
