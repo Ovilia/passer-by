@@ -321,47 +321,24 @@ define(function(require) {
         }
 
         var that = this;
-        Dom7.getJSON('res/json/meet.json', function(data) {
-            var generations = [];
-            var userCnt = 10;
-            for (var gid = 0; gid < 1; ++gid) {
-                var generation = [];
-                for (var mid = 0, mlen = data.length; mid < mlen; ++mid) {
-                    var meets = generation[data[mid].uid1];
-                    if (!meets) {
-                        generation[data[mid].uid1] = [];
-                    }
-                    generation[data[mid].uid1].push(mid);
+        Dom7.getJSON('res/json/meet2.json', function(data) {
+            var series = [];
+            var legends = [];
+            for (var gid = 1, glen = data.length; gid < glen; ++gid) {
+                var geo = [];
+                for (var uid = 0, ulen = data[gid].length; uid < ulen; ++uid) {
+                    var parent = data[gid - 1][data[gid][uid].parent];
+                    geo.push([{
+                        geoCoord: [parent.lng, parent.lat]
+                    }, {
+                        geoCoord: [data[gid][uid].lng, data[gid][uid].lat]
+                    }]);
                 }
-                generations.push(generation);
-            }
-            console.log(generations);
-
-            var geoCoord = [];
-            for (var gid = 0; gid < 1; ++gid) {
-                var generation = generations[gid];
-                for (var uid = 0, ulen = generation.length; uid < ulen; ++uid) {
-                    for (var mid = 0, mlen = generation[uid].length; mid < mlen; ++mid) {
-                        var id = generation[uid][mid];
-                        geoCoord.push([{
-                            geoCoord: [
-                                data[generation[uid][0]].lng1,
-                                data[generation[uid][0]].lat1
-                            ]
-                        }, {
-                            geoCoord: [
-                                data[id].lng1,
-                                data[id].lat1
-                            ]
-                        }]);
-                    }
-                }
-            }
-
-            var option = {
-                color: color.colorSeries(),
-                series: [{
-                    name: '第0代',
+                legends.push({
+                    name: '第' + gid + '代'
+                });
+                var serie = {
+                    name: '第' + gid + '代',
                     type: 'map',
                     mapType: 'none',
                     data: [{}],
@@ -384,9 +361,19 @@ define(function(require) {
                                 }
                             }
                         },
-                        data: geoCoord
+                        data: geo
                     }
-                }]
+                };
+                series.push(serie);
+            }
+
+            var option = {
+                legend: {
+                    show: true,
+                    data: legends
+                },
+                color: color.colorSeries(),
+                series: series
             };
             that.mapOperator.setOption(option, true);
         });

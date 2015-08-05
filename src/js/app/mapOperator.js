@@ -11,7 +11,7 @@ define(function(require) {
 
     /**
      * init and displays the map
-     * @param  {HTMLElement} mapDom DOM element to display the map.
+     * @param {HTMLElement} mapDom DOM element to display the map.
      */
     function MapOperator(mapDom) {
         this.echarts = require('echarts');
